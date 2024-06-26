@@ -11,24 +11,28 @@
 <body>
 
   <header>
-    <div class="list roundBorder">
-      <div class="date">
-          <div class="dateRight">
-             <div id="dateNumber"></div>
-                <div>
-                    <div id="dateMonth"></div>
-                    <div id="dateYear"></div>
-                </div>
-            </div>
-            <div id="dateText"></div>
+    <div class="list">
+    <div class="date">
+    <div class="dateRight">
+    <div id="dateNumber"></div>
+        <div>
+     <div id="dateMonth"></div>
+     <div id="dateYear"></div>
         </div>
+        </div>
+     <div id="dateText"></div>
+        </div>
+       
+        
         <form onsubmit="addNewTask(event)">
             <input type="text" name="taskText" autocomplete="off" placeholder="Nueva tarea" class="round">
             <button type="submit" class="addTaskButton">+</button>
         </form>
+        
         <div id="tasksContainer"></div>
         <div id="errorContainer" class="error"></div>
     </div>
+   
    <script src="script.js"></script>
    </header>
 </body>

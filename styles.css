@@ -17,12 +17,9 @@ body {
     background-attachment: fixed;
 }
 
-.roundBorder {
-    font-size: 20px;
-}
-
+/* Donde ingresar tarea */
 .round {
-    color: black;
+    color: blueviolet;
     font-family: Piedra;
     font-size: 20px;
 }
@@ -39,10 +36,11 @@ header {
 }
 
 .list {
-    margin: 25px auto;
-    padding: 25px;
+    margin: 35px auto;
+    padding: 10px;
     width: 100%;
     max-width: 350px;
+    font-size: 20px;
 }
 
 /* Dia, mes, año y dia de la semana */
@@ -116,7 +114,7 @@ input:focus {
     background-color: transparent;
     padding: 5px;
     margin-top: 5px;
-    color: blue;
+    color: black;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
