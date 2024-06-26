@@ -55,14 +55,28 @@ const changeTaskState = index => {
 
 const deleteTask = index => {
     const tasks = getSavedTasks();
-    const taskText = tasks[index].text; // Guardar el texto de la tarea
+    const taskText = tasks[index].text;
 
     const confirmation = confirm(`¿Estás seguro de que quieres eliminar la tarea: "${taskText}"?`);
     if (!confirmation) {
-        return; // Si se cancela, no se elimina la tarea
+        return;
     }
 
-    tasks.splice(index, 1); // Eliminar la tarea si se confirma
+    tasks.splice(index, 1);
+    saveTasks(tasks);
+    renderTasks(tasks);
+};
+
+const editTask = index => {
+    const tasks = getSavedTasks();
+    const taskText = tasks[index].text;
+
+    const newText = prompt('Edita la tarea:', taskText);
+    if (newText === null || newText.trim() === '') {
+        return;
+    }
+
+    tasks[index].text = newText.trim();
     saveTasks(tasks);
     renderTasks(tasks);
 };
@@ -82,6 +96,7 @@ const renderTasks = tasks => {
         taskText.className = 'task-text';
         taskText.textContent = task.text;
         taskText.addEventListener('click', () => changeTaskState(index));
+        taskText.addEventListener('dblclick', () => editTask(index));
 
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
