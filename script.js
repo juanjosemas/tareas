@@ -55,7 +55,14 @@ const changeTaskState = index => {
 
 const deleteTask = index => {
     const tasks = getSavedTasks();
-    tasks.splice(index, 1);
+    const taskText = tasks[index].text; // Guardar el texto de la tarea
+
+    const confirmation = confirm(`¿Estás seguro de que quieres eliminar la tarea: "${taskText}"?`);
+    if (!confirmation) {
+        return; // Si se cancela, no se elimina la tarea
+    }
+
+    tasks.splice(index, 1); // Eliminar la tarea si se confirma
     saveTasks(tasks);
     renderTasks(tasks);
 };
