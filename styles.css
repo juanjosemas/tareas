@@ -18,6 +18,10 @@ body {
 }
 
 .roundBorder {
+    font-size: 20px;
+}
+
+.round {
     color: black;
     font-family: Piedra;
     font-size: 20px;
@@ -39,12 +43,9 @@ header {
     padding: 25px;
     width: 100%;
     max-width: 350px;
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/bosque.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
 }
 
+/* Dia, mes, año y dia de la semana */
 .date {
     display: flex;
     align-items: center;
@@ -52,15 +53,18 @@ header {
     color: black;
 }
 
+/* Dia, mes y año (izquierda) */
 .dateRight {
     display: flex;
     align-items: center;
 }
 
+/* Dia del mes solo */
 #dateNumber {
     font-size: 50px;
 }
 
+/* Dia de la semana (lunes...) */
 #dateText {
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -96,16 +100,18 @@ input:focus {
     outline: none;
 }
 
+/* Boton + */
 .addTaskButton {
     border: none;
     font-weight: bold;
     cursor: pointer;
     height: 35px;
     border-radius: 50%;
-    font-size: 18px;
+    font-size: 25px;
     background-color: var(--diabled);
 }
 
+/* Las tareas */
 .task {
     background-color: transparent;
     padding: 5px;
