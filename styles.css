@@ -19,9 +19,11 @@ body {
 
 /* Donde ingresar tarea */
 .round {
-    color: blueviolet;
+    color: blue;
     font-family: Piedra;
     font-size: 20px;
+    font-style: italic;
+    box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
 }
 
 header {
@@ -107,6 +109,7 @@ input:focus {
     border-radius: 50%;
     font-size: 25px;
     background-color: var(--diabled);
+    box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
 }
 
 /* Las tareas */
@@ -119,8 +122,10 @@ input:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-style: italic;
 }
 
+/* Las tareas */
 .task > .task-text {
     flex-grow: 1;
 }
