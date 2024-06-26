@@ -145,3 +145,8 @@ input:focus {
     margin-top: 10px;
     display: none;
 }
+
+.draggable {
+    user-select: none; /* Evita la selección del texto durante el arrastre */
+    cursor: move;
+}

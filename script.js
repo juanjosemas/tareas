@@ -39,7 +39,7 @@ const addNewTask = event => {
     errorContainer.style.display = 'none';
     const task = { text: value, done: false };
     const tasks = getSavedTasks();
-    tasks.push(task); // Añadir al final de la lista
+    tasks.push(task);
     saveTasks(tasks);
 
     renderTasks(tasks);
@@ -64,8 +64,13 @@ const renderTasks = tasks => {
     tasksContainer.innerHTML = '';
     tasks.forEach((task, index) => {
         const taskElement = document.createElement('div');
-        taskElement.className = `task roundBorder ${task.done ? 'done' : ''}`;
-        
+        taskElement.className = `task roundBorder ${task.done ? 'done' : ''} draggable`;
+        taskElement.draggable = true;
+
+        taskElement.addEventListener('dragstart', (e) => handleDragStart(e, index));
+        taskElement.addEventListener('dragover', handleDragOver);
+        taskElement.addEventListener('drop', (e) => handleDrop(e, index));
+
         const taskText = document.createElement('div');
         taskText.className = 'task-text';
         taskText.textContent = task.text;
@@ -77,8 +82,26 @@ const renderTasks = tasks => {
         deleteButton.addEventListener('click', () => deleteTask(index));
 
         taskElement.append(taskText, deleteButton);
-        tasksContainer.append(taskElement); // Añadir al final del contenedor
+        tasksContainer.append(taskElement);
     });
+};
+
+const handleDragStart = (e, index) => {
+    e.dataTransfer.setData('text/plain', index);
+};
+
+const handleDragOver = (e) => {
+    e.preventDefault();
+};
+
+const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const draggedIndex = e.dataTransfer.getData('text/plain');
+    const tasks = getSavedTasks();
+    const draggedTask = tasks.splice(draggedIndex, 1)[0];
+    tasks.splice(dropIndex, 0, draggedTask);
+    saveTasks(tasks);
+    renderTasks(tasks);
 };
 
 const order = () => {
