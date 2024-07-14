@@ -20,6 +20,7 @@ body {
 /* Donde ingresar tarea */
 .round {
     color: blue;
+    border-radius: 10px;
     font-family: Piedra;
     font-size: 20px;
     font-style: italic;
@@ -155,3 +156,4 @@ input:focus {
     user-select: none; /* Evita la selección del texto durante el arrastre */
     cursor: move;
 }
+
