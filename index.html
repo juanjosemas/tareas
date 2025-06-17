@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de tareas</title>  
+    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&displayfamily=Amatic+SC:wght@700&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Lobster&family=Metal+Mania&family=Yellowtail& family=Permanent+Marker&family=Piedra&family=Sriracha&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   
+  <div class="container">
+    <h1><u><i><img src="img/Juanjo.ico" class="ico" width="35">Lista de tareas</i></u></h1>
+  
+    <br>
+     
+    <div class="perfil"> </div> 
+    <!-- - - - - - - - - - - - - - - - - -->
+   
+    <div class="agregar-tarea">
+        <input type="text" id="input" placeholder="Nueva tarea">
+        <i id="boton-enter" class="fas fa-check-circle"></i>
+        <!-- === NUEVO BOTÓN PARA GRABAR VOZ === -->
+        <button id="boton-grabar-voz" title="Agregar producto por voz">
+            <i class="fas fa-microphone"></i>
+        </button>
+        <!-- === FIN NUEVO BOTÓN === -->
+    </div> 
+    
+    <br>
+    
+    <div class="seccion-tarea">
+        <ul id="lista">
+            <!-- Los elementos de la lista se generarán aquí con JS -->
+        </ul>
+    </div>   
+ 
+  </div>
+    
+<script src="script.js"></script>
+</body>
+</html>

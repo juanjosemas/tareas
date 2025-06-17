@@ -1,0 +1,221 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+   --blue-dark:#2a73c2;
+   --green: #2c7b90;
+}
+
+body {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/nubes.jpg');
+    height: 100vh;   
+}
+
+.container {
+    max-width: 90%;
+    width: 400px;
+    /* height: 600px; Ajustado para contenido dinámico */
+    min-height: 500px; /* Altura mínima */
+    margin: 10px auto; 
+    font-family: 'Lobster', cursive; /* Asegúrate que Lobster esté bien referenciado */
+    color: navy;
+}
+
+h1 {
+    text-align: center; /* Centrar el título */
+}
+
+/*AGREGAR TAREA*/
+
+/* Donde ingresar producto */
+.agregar-tarea {
+    background-color: white;
+    border-radius: 15px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    /* gap: 30px; Lo manejaremos con márgenes/padding específico */
+    padding: 10px;
+    margin: 5px 0;
+    box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
+}
+
+/* Ingreso del producto */
+.agregar-tarea input {
+    width: 100%; /* Ocupará el espacio disponible */
+    flex-grow: 1; /* Permite que el input crezca */
+    height: 100%;
+    border-radius: 8px;
+    border: none;
+    background-color: white;
+    padding-left: 10px; /* Aumentado un poco el padding */
+    font-family: 'Piedra', cursive; /* Asegúrate que Piedra esté bien referenciado */
+    font-size: 20px;
+    font-style: italic;
+    box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
+    margin-right: 10px; /* Espacio antes de los botones */
+}
+
+/* Tamaño donde agregar producto */
+.agregar-tarea input::placeholder {
+   font-size: 1.4rem;
+   color: gray;
+   font-family: 'Caveat', cursive; /* Asegúrate que Caveat esté bien referenciado */
+}
+
+/* Boton check de agregar producto */
+.agregar-tarea i#boton-enter { /* Más específico para el botón enter */
+    font-size: 35px;
+    color: indigo;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.agregar-tarea i#boton-enter:hover {
+    transform: scale(1.1);
+}
+
+/* === ESTILOS PARA EL BOTÓN DE VOZ === */
+.agregar-tarea button#boton-grabar-voz {
+    background-color: transparent;
+    border: none;
+    color: indigo; /* Mismo color que el botón de check para consistencia */
+    font-size: 30px; /* Ajusta según veas necesario, un poco más pequeño que el check */
+    cursor: pointer;
+    padding: 0 5px; /* Pequeño padding para que no esté pegado */
+    margin-left: 5px; /* Espacio entre el check y el micrófono */
+    transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
+    display: flex; /* Para alinear el icono interno si es necesario */
+    align-items: center;
+    justify-content: center;
+}
+
+.agregar-tarea button#boton-grabar-voz:hover {
+    transform: scale(1.1);
+    color: #5c007a; /* Un tono más oscuro o diferente al hacer hover */
+}
+
+.agregar-tarea button#boton-grabar-voz:disabled {
+    color: #999; /* Color cuando está deshabilitado (escuchando) */
+    cursor: default;
+    transform: scale(1);
+}
+
+.agregar-tarea button#boton-grabar-voz.escuchando i {
+    color: red; /* O un verde, o algún indicador visual */
+    animation: pulseMic 1.2s infinite ease-in-out;
+}
+
+@keyframes pulseMic {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+/* === FIN ESTILOS BOTÓN DE VOZ === */
+
+
+/*SECCION DE TAREA */
+.seccion-tarea {
+    margin-top: 2px; /* Espacio arriba de la lista */
+}
+
+.seccion-tarea ul {
+    list-style: none; /* Quitar viñetas por defecto */
+}
+
+.seccion-tarea li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom,var(--blue-dark),var(--green));
+    border-radius: 12px;
+    padding: 3px; /* Ajustado el padding */
+    color: white;
+    margin: 10px 0; /* Un poco más de margen entre elementos */
+    box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
+    font-family: 'Lobster', cursive; /* Asegurar consistencia de fuente */
+}
+
+/* Para marcar el circulo de la tarea*/
+.seccion-tarea li i { /* Estilo general para iconos dentro del li */
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Nombre y tamaño de la tarea */
+.seccion-tarea > ul p.text { /* Más específico para el texto de la tarea */
+    font-size: 1.4rem;
+    color: whitesmoke;
+    /* font-family: Lobster; No es necesario, ya está en el li */
+    font-style: italic;
+    flex-grow: 1; /* Para que ocupe el espacio y empuje el icono de borrar */
+    margin: 0 10px; /* Espacio alrededor del texto */
+    word-break: break-word; /* Para que textos largos no rompan el layout */
+}
+
+/* Circulo cuando completas compra */
+.seccion-tarea i.fa-circle:hover, .seccion-tarea i.fa-check-circle:hover {
+    color: lightcoral; /* Un color diferente para hover en los checks */
+}
+.seccion-tarea i.fa-trash:hover {
+    color: red; /* Color rojo para el hover del icono de basura */
+}
+
+
+/* Tachon encima de lo ya comprado */
+.line-through{
+    text-decoration: line-through;
+    text-decoration-color: red; /* O un color que contraste bien con el fondo del li */
+    text-decoration-style: wavy;
+    opacity: 0.7; /* Hacerlo un poco más tenue */
+}
+
+/* El check redondo de la izquierda y cuando lo tocas se queda de ese color*/
+/* Ya no necesitamos .fa-check-circle con color:red aquí, se maneja por la clase que añade JS */
+
+/* El check redondo de la izquierda de color cuando no lleva check */
+.fa-circle{
+    color: white; /* Color inicial del círculo no marcado */
+}
+.fa-check-circle { /* Cuando está marcado */
+    color: lightgreen; /* Un verde para indicar completado */
+}
+
+
+/*Esta parte es sobre el icono para que gire */
+.ico{
+    border-radius: 50%; 
+    margin: 0 15px 0 0;
+    animation-name: logo;
+    animation-duration: 3s;
+    transition: all 0.5s ease-in-out;
+    background-color: black;
+    border: 2px solid red;
+    box-shadow: 0 0 0 3px black;
+}
+
+@keyframes logo{
+   from{
+     opacity: 0;
+     transform: scale(0.5) rotate(0deg);
+   }
+     
+    to{
+      opacity: 1;
+      transform: scale(1) rotate(1440deg);
+    }
+}
