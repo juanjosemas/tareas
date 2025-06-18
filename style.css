@@ -15,37 +15,51 @@ body {
     background-position: center;
     background-attachment: fixed;
     background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/nubes.jpg');
-    height: 100vh;   
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px 0; /* Padding arriba/abajo para el body */
+    overflow-y: auto; /* Scroll en body si .container es más alto que la ventana */
 }
 
 .container {
     max-width: 90%;
     width: 400px;
-    min-height: 500px;
-    margin: 10px auto; 
+    margin: 0 auto; /* Centrado horizontal */
     font-family: 'Lobster', cursive;
     color: navy;
-    overflow-x: hidden; /* Para prevenir desbordamiento horizontal del contenedor principal si algo se sale */
+    overflow-x: hidden; 
+    
+    display: flex;
+    flex-direction: column;
+    /* Si quieres limitar la altura total del .container y que .seccion-tarea haga scroll dentro: */
+    /* max-height: calc(100vh - 20px); /* Ejemplo: 100vh menos el padding del body */
+    /* Si no defines max-height aquí, .container crecerá con su contenido hasta el límite de la ventana (si body es 100vh) */
+    /* o hasta que .seccion-tarea tenga su propio scroll */
 }
 
 h1 {
     text-align: center;
+    flex-shrink: 0; 
+    margin-bottom: 10px; 
 }
 
 /*AGREGAR TAREA*/
 .agregar-tarea {
     background-color: white;
     border-radius: 15px;
-    height: 50px;
+    height: 50px; 
     display: flex;
     align-items: center;
     padding: 10px;
-    margin: 5px 0;
+    margin: 5px 0 15px 0; 
     box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
+    flex-shrink: 0; 
 }
 
 .agregar-tarea input {
-    width: 100%; /* El input tomará el ancho del espacio que le deje flex-grow */
+    width: 100%;
     flex-grow: 1;
     height: 100%;
     border-radius: 8px;
@@ -57,7 +71,7 @@ h1 {
     font-style: italic;
     box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
     margin-right: 10px;
-    min-width: 0; /* MUY IMPORTANTE para inputs en flex containers para evitar que se desborden */
+    min-width: 0;
 }
 
 .agregar-tarea input::placeholder {
@@ -71,6 +85,7 @@ h1 {
     color: indigo;
     cursor: pointer;
     transition: transform 0.2s;
+    flex-shrink: 0;
 }
 
 .agregar-tarea i#boton-enter:hover {
@@ -90,7 +105,7 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0; /* Para que el botón no se encoja */
+    flex-shrink: 0;
 }
 
 .agregar-tarea button#boton-grabar-voz:hover {
@@ -120,6 +135,14 @@ h1 {
 /*SECCION DE TAREA */
 .seccion-tarea {
     margin-top: 2px;
+    flex-grow: 1; /* Permite que esta sección crezca para llenar el espacio vertical */
+    overflow-y: auto; /* Scroll solo para esta sección si es necesario */
+    min-height: 100px; /* Altura mínima para que no colapse */
+    -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+    /* Opcional: una altura máxima fija si prefieres controlar su tamaño exacto */
+    /* max-height: 400px; */ 
+    /* Opcional: padding para que el contenido no pegue con la barra de scroll */
+    /* padding-right: 5px; */
 }
 
 .seccion-tarea ul#lista {
@@ -130,17 +153,17 @@ h1 {
 .seccion-tarea li {
     display: flex;
     align-items: center;
-    /* justify-content: space-between; QUITAMOS ESTO temporalmente para que los iconos no se peguen a los bordes si el texto es corto */
     background: linear-gradient(to bottom,var(--blue-dark),var(--green));
     border-radius: 12px;
     padding: 3px 10px;
     color: white;
-    margin: 10px 0;
+    margin: 10px 5px; /* Margen para que no pegue con los bordes de .seccion-tarea */
     box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
     font-family: 'Lobster', cursive;
     transition: transform 0.2s ease-out, opacity 0.2s ease-out; 
-    position: relative; /* Para algunos contextos de z-index si es necesario */
-    overflow: hidden; /* Para asegurar que el contenido no se desborde del li */
+    position: relative; 
+    overflow: hidden; 
+    flex-shrink: 0; /* Evitar que los li se encojan */
 }
 
 .seccion-tarea li i {
@@ -149,32 +172,27 @@ h1 {
     transition: color 0.2s;
     flex-shrink: 0;
     padding: 5px;
-    /* z-index: 1; Para asegurar que los iconos estén sobre el texto/input si hay superposición */
 }
-/* Icono de check/uncheck a la izquierda */
 .seccion-tarea li i[data-action="toggleRealizado"] {
-    margin-right: 5px; /* Espacio entre el icono de check y el texto/input */
+    margin-right: 5px; 
 }
-/* Icono de basura a la derecha */
 .seccion-tarea li i[data-action="eliminar"] {
-    margin-left: auto; /* EMPUJA el icono de basura a la DERECHA */
+    margin-left: auto; 
 }
 
-
-/* Nombre y tamaño de la tarea */
 .seccion-tarea > ul p.text {
     font-size: 1.4rem;
     color: whitesmoke;
     font-style: italic;
-    flex-grow: 1; /* El texto ocupa el espacio central */
-    margin: 0 5px; /* Reducido un poco el margen horizontal */
+    flex-grow: 1; 
+    margin: 0 5px; 
     word-break: break-word;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
-    min-width: 0; /* Para que el p.text también se comporte bien en flex y no desborde */
-    text-align: left; /* Asegurar alineación */
+    min-width: 0; 
+    text-align: left; 
 }
 
 .seccion-tarea i.fa-circle:hover, .seccion-tarea i.fa-check-circle:hover {
@@ -186,9 +204,8 @@ h1 {
 
 .line-through{
     text-decoration: line-through;
-    text-decoration-color: red;
+    text-decoration-color: red; 
     text-decoration-style: wavy;
-    /* opacity: 0.7; QUITAMOS LA OPACIDAD AQUÍ PARA QUE EL TEXTO TACHADO SEA IGUAL DE VISIBLE */
 }
 
 .fa-circle{
@@ -216,9 +233,9 @@ h1 {
 
 /* === ESTILOS PARA EDICIÓN DE TAREAS === */
 .edit-task-input {
-    flex-grow: 1; /* El input ocupa el espacio central */
+    flex-grow: 1; 
     padding: 8px; 
-    margin: 0; /* El margen ya lo controla el li o los iconos de alrededor */
+    margin: 0; 
     border: 1px solid #ccc; 
     border-radius: 8px; 
     font-size: 1.4rem; 
@@ -229,28 +246,28 @@ h1 {
     box-sizing: border-box; 
     height: auto; 
     min-height: 30px; 
-    width: auto; /* Permitir que flexbox maneje el ancho */
-    min-width: 0; /* MUY IMPORTANTE para inputs en flex containers */
-    /* text-align: left; Ya debería heredar */
+    width: auto; 
+    min-width: 0; 
 }
-
 
 /* === INICIO ESTILOS PARA DRAG AND DROP === */
 #lista li.dragging-task {
-    /* opacity: 0.6; Eliminamos o reducimos la opacidad si no te gusta */
-    /* Si quieres un poco de opacidad, prueba con un valor más alto como 0.8 o 0.9 */
-    opacity: 1; /* Mantiene la opacidad original */
-    background: var(--green); /* Mantenemos un ligero cambio de fondo para indicar arrastre */
+    opacity: 1; 
+    background: var(--green); 
     box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
-    /* z-index: 1000; Ya se aplica por JS, no es estrictamente necesario aquí */
 }
 
 .placeholder-task {
     background-color: rgba(42, 115, 194, 0.2); 
     border: 2px dashed var(--blue-dark);
     border-radius: 12px; 
-    margin: 10px 0; 
+    margin: 10px 5px; /* Coincidir con el margen de los li */
     box-sizing: border-box;
     list-style-type: none !important; 
+}
+
+#lista li.dragging-task {
+    /* ... otros estilos ... */
+    touch-action: none;
 }
 /* === FIN ESTILOS PARA DRAG AND DROP === */
