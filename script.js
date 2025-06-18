@@ -1,20 +1,41 @@
 const lista = document.querySelector('#lista');
 const input = document.querySelector('#input');
 const botonEnter = document.querySelector('#boton-enter');
-const botonGrabarVoz = document.getElementById('boton-grabar-voz'); // Nuevo botón
+const botonGrabarVoz = document.getElementById('boton-grabar-voz');
 
 const check = 'fa-check-circle';
 const uncheck = 'fa-circle';
 const lineThrough = 'line-through';
 let LIST;
-let id; // para que inicie en 0 cada tarea tendra un id diferente
+let id;
 
+// --- FUNCIÓN PARA CONVERTIR PALABRAS DE NÚMEROS A DÍGITOS ---
+function palabraANumero(palabraNumero) {
+    const palabra = palabraNumero.toLowerCase().trim();
+    // Eliminar posible puntuación al final para mejorar la coincidencia
+    const palabraLimpia = palabra.replace(/[.,!?]$/, '');
+    const mapaNumeros = {
+        'cero': '0', 'uno': '1', 'dos': '2', 'tres': '3', 'cuatro': '4',
+        'cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9',
+        'diez': '10', 'once': '11', 'doce': '12', 'trece': '13', 'catorce': '14',
+        'quince': '15', 'dieciséis': '16', 'diecisiete': '17', 'dieciocho': '18',
+        'diecinueve': '19', 'veinte': '20'
+        // Puedes expandir esta lista si necesitas más números
+    };
+    const numero = mapaNumeros[palabraLimpia];
+    if (numero !== undefined) {
+        // Re-añadir la puntuación si existía y la palabra original terminaba con ella
+        const puntuacion = palabra.match(/[.,!?]$/);
+        return numero + (puntuacion ? puntuacion[0] : '');
+    }
+    return null;
+}
 
 // --- FUNCIÓN PARA AÑADIR UN PRODUCTO A LA LISTA (DOM y Array) ---
 function procesarYAnadirTarea(nombreTarea) {
     const tareaLimpia = nombreTarea.trim();
     if (tareaLimpia) {
-        agregarTareaAlDOM(tareaLimpia, id, false, false); // Añade al DOM
+        agregarTareaAlDOM(tareaLimpia, id, false, false);
         LIST.push({
             nombre: tareaLimpia,
             id: id,
@@ -22,23 +43,22 @@ function procesarYAnadirTarea(nombreTarea) {
             eliminado: false
         });
         localStorage.setItem('TODO', JSON.stringify(LIST));
-        id++; // Incrementar el ID para el próximo elemento
+        id++;
         console.log("Producto añadido:", tareaLimpia, "ID actual para próximo:", id);
-        console.log(LIST);
-        return true; // Éxito
+        return true;
     }
-    return false; // No se añadió nada (ej. string vacío)
+    return false;
 }
 
 // --- FUNCIÓN PARA AGREGAR TAREA AL DOM ---
 function agregarTareaAlDOM(tarea, idItem, realizado, eliminado) {
-    if (eliminado) { return; } // si existe eliminado es true si no es false 
+    if (eliminado) { return; }
 
-    const REALIZADO_CLASS = realizado ? check : uncheck; // si realizado es verdadero check si no uncheck
+    const REALIZADO_CLASS = realizado ? check : uncheck;
     const LINE_CLASS = realizado ? lineThrough : '';
 
     const elementoHTML = `
-        <li id="elemento-${idItem}"> <!-- ID único para el li si es necesario, aunque manejamos por el ID del icono -->
+        <li id="elemento-${idItem}">
             <i class="far ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${idItem}"></i>
             <p class="text ${LINE_CLASS}">${tarea}</p>
             <i class="fas fa-trash" data-action="eliminar" id="${idItem}"></i> 
@@ -53,7 +73,7 @@ function tareaRealizada(element) {
     element.classList.toggle(uncheck);
     element.parentNode.querySelector('.text').classList.toggle(lineThrough);
     
-    const itemId = parseInt(element.id); // Asegurarse que el ID es un número
+    const itemId = parseInt(element.id);
     const tareaEnLista = LIST.find(item => item.id === itemId);
     if (tareaEnLista) {
         tareaEnLista.realizado = !tareaEnLista.realizado;
@@ -61,19 +81,16 @@ function tareaRealizada(element) {
         console.error("No se encontró la tarea en LIST con id:", itemId);
     }
     localStorage.setItem('TODO', JSON.stringify(LIST));
-    // console.log(LIST);
 }
 
 // --- FUNCIÓN DE TAREA ELIMINADA ---
 function tareaEliminada(element) {
-    element.parentNode.parentNode.removeChild(element.parentNode); // Elimina el <li> del DOM
+    element.parentNode.parentNode.removeChild(element.parentNode);
 
-    const itemId = parseInt(element.id); // Asegurarse que el ID es un número
+    const itemId = parseInt(element.id);
     const tareaEnLista = LIST.find(item => item.id === itemId);
     if (tareaEnLista) {
-        tareaEnLista.eliminado = true; // Marcar como eliminado en el array
-        // Opcional: filtrar la lista para removerlo permanentemente si no se quiere guardar el estado "eliminado"
-        // LIST = LIST.filter(item => item.id !== itemId); 
+        tareaEnLista.eliminado = true;
     } else {
         console.error("No se encontró la tarea en LIST con id para eliminar:", itemId);
     }
@@ -83,29 +100,25 @@ function tareaEliminada(element) {
 
 
 // --- EVENT LISTENERS ---
-
-// Evento para el botón de Enter (check)
 botonEnter.addEventListener('click', () => {
     const tareaTexto = input.value;
     if (procesarYAnadirTarea(tareaTexto)) {
-        input.value = ''; // Limpiar el input solo si se añadió la tarea
+        input.value = '';
     }
 });
 
-// Evento para la tecla Enter en el input
-input.addEventListener('keyup', function (event) { // Mejor escuchar en el input directamente
+input.addEventListener('keyup', function (event) {
     if (event.key === 'Enter') {
         const tareaTexto = input.value;
         if (procesarYAnadirTarea(tareaTexto)) {
-            input.value = ''; // Limpiar el input
+            input.value = '';
         }
     }
 });
 
-// Evento para clicks en la lista (marcar como realizado o eliminar)
 lista.addEventListener('click', function (event) {
-    const element = event.target; // Elemento que disparó el evento (el icono <i>)
-    if (element.tagName === 'I' && element.attributes['data-action']) { // Asegurarse que es un icono con data-action
+    const element = event.target;
+    if (element.tagName === 'I' && element.attributes['data-action']) {
         const action = element.attributes['data-action'].value;
         
         if (action === 'toggleRealizado') {
@@ -120,7 +133,6 @@ lista.addEventListener('click', function (event) {
 // --- LÓGICA DE CARGA INICIAL DE DATOS ---
 function cargarListaDesdeStorage(arrayItems) {
     arrayItems.forEach(function (item) {
-        // Solo cargar si no está marcado como eliminado, o si tu lógica lo requiere de otra forma
         if (!item.eliminado) { 
             agregarTareaAlDOM(item.nombre, item.id, item.realizado, item.eliminado);
         }
@@ -130,15 +142,9 @@ function cargarListaDesdeStorage(arrayItems) {
 let data = localStorage.getItem('TODO');
 if (data) {
     LIST = JSON.parse(data);
-    // Filtrar los elementos ya marcados como eliminados para no considerarlos en el cálculo del próximo ID
-    // y para no cargarlos si no se desea. Si quieres que 'eliminado' solo oculte, no filtres aquí.
-    LIST = LIST.filter(item => !item.eliminado); // Esto limpia los eliminados del array activo
-    
-    // Recalcular el próximo ID basado en el máximo ID existente + 1
-    // Si LIST está vacío después de filtrar, el id inicial será 0.
+    LIST = LIST.filter(item => !item.eliminado);
     id = LIST.length > 0 ? Math.max(...LIST.map(item => item.id)) + 1 : 0;
-    
-    cargarListaDesdeStorage(LIST); // Carga los elementos NO eliminados al DOM
+    cargarListaDesdeStorage(LIST);
     console.log("Lista cargada desde localStorage:", LIST);
     console.log("Próximo ID será:", id);
 } else {
@@ -153,20 +159,19 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
 
-    recognition.lang = 'es-ES'; // Español de España
-    recognition.interimResults = false; // No queremos resultados provisionales
-    recognition.maxAlternatives = 1; // Solo la mejor transcripción
+    recognition.lang = 'es-ES';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
     botonGrabarVoz.addEventListener('click', () => {
         try {
             recognition.start();
             botonGrabarVoz.disabled = true;
             botonGrabarVoz.classList.add('escuchando');
-            botonGrabarVoz.querySelector('i').className = 'fas fa-microphone-alt'; // Cambiar icono si quieres
+            botonGrabarVoz.querySelector('i').className = 'fas fa-microphone-alt';
             console.log("Reconocimiento de voz iniciado...");
         } catch(e) {
             console.error("Error al iniciar reconocimiento (ya estaba iniciado?):", e);
-            // Asegurar que el botón se re-habilita si falla el inicio
             botonGrabarVoz.disabled = false;
             botonGrabarVoz.classList.remove('escuchando');
             botonGrabarVoz.querySelector('i').className = 'fas fa-microphone';
@@ -174,26 +179,115 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     });
 
     recognition.onresult = (event) => {
-        const speechResult = event.results[0][0].transcript;
-        console.log('Texto reconocido:', speechResult);
+        const rawSpeechResult = event.results[0][0].transcript.trim();
+        const speechResultLower = rawSpeechResult.toLowerCase();
         
-        // Procesar y añadir la tarea. No limpiamos el input de texto aquí.
-        procesarYAnadirTarea(speechResult); 
+        console.log('Texto reconocido (original):', rawSpeechResult);
+        console.log('Texto reconocido (procesando):', speechResultLower);
+
+        let tareaProcesadaPorComandoDeAccion = false;
+
+        const prefijosComandos = {
+            eliminar: ["eliminar tarea ", "borrar tarea "],
+            completar: ["completar tarea ", "marcar tarea ", "tachar tarea ", "realizar tarea "]
+        };
+
+        function procesarComandoAccion(tipoComando, prefijos) {
+            for (const prefijo of prefijos) {
+                if (speechResultLower.startsWith(prefijo)) {
+                    const numeroPalabraODigito = rawSpeechResult.substring(prefijo.length).trim();
+                    const numeroConvertido = palabraANumero(numeroPalabraODigito.toLowerCase());
+                    const idParaBuscar = numeroConvertido || numeroPalabraODigito;
+
+                    const idTarea = parseInt(idParaBuscar);
+
+                    if (!isNaN(idTarea)) {
+                        let elementoIcono;
+                        if (tipoComando === "eliminar") {
+                            elementoIcono = document.querySelector(`.fa-trash[id="${idTarea}"]`);
+                        } else if (tipoComando === "completar") {
+                            elementoIcono = document.querySelector(`i[data-action="toggleRealizado"][id="${idTarea}"]`);
+                        }
+
+                        if (elementoIcono) {
+                            if (tipoComando === "eliminar") tareaEliminada(elementoIcono);
+                            if (tipoComando === "completar") tareaRealizada(elementoIcono);
+                            tareaProcesadaPorComandoDeAccion = true;
+                            console.log(`Comando: ${tipoComando} tarea con ID ${idTarea}`);
+                            return true;
+                        } else {
+                            console.log(`No se encontró tarea con ID ${idTarea} para ${tipoComando}.`);
+                            alert(`No se encontró la tarea número ${idParaBuscar} para ${tipoComando}.`);
+                            tareaProcesadaPorComandoDeAccion = true;
+                            return true;
+                        }
+                    } else {
+                        console.log(`Número '${numeroPalabraODigito}' no válido para ${tipoComando}.`);
+                        alert(`El número '${numeroPalabraODigito}' no es válido para ${tipoComando}.`);
+                        tareaProcesadaPorComandoDeAccion = true;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        if (procesarComandoAccion("eliminar", prefijosComandos.eliminar)) {
+            // Acción manejada
+        } else if (procesarComandoAccion("completar", prefijosComandos.completar)) {
+            // Acción manejada
+        }
+
+        if (!tareaProcesadaPorComandoDeAccion) {
+            let nombreTareaParaAnadir;
+            const prefijosAgregar = ["agregar tarea ", "añadir tarea ", "nueva tarea "];
+            let textoBaseParaNombre = rawSpeechResult; // Usar el texto original con su capitalización
+
+            for (const prefijo of prefijosAgregar) {
+                if (speechResultLower.startsWith(prefijo)) {
+                    textoBaseParaNombre = rawSpeechResult.substring(prefijo.length).trim();
+                    break; 
+                }
+            }
+            
+            // --- INICIO DE LA MODIFICACIÓN CLAVE ---
+            if (textoBaseParaNombre) {
+                const palabrasOriginales = textoBaseParaNombre.split(' ');
+                const palabrasProcesadas = palabrasOriginales.map(palabraOriginal => {
+                    // Intentar convertir la versión en minúsculas de la palabra,
+                    // pero mantenemos la palabraOriginal por si no se convierte,
+                    // para conservar mayúsculas/minúsculas.
+                    const numeroConvertido = palabraANumero(palabraOriginal); // palabraANumero ya hace toLowerCase()
+                    
+                    // Si se convirtió, usar el dígito. Si no, usar la palabra original.
+                    return numeroConvertido !== null ? numeroConvertido : palabraOriginal;
+                });
+                nombreTareaParaAnadir = palabrasProcesadas.join(' ');
+                console.log(`Nombre de tarea procesado palabra por palabra: "${textoBaseParaNombre}" -> "${nombreTareaParaAnadir}"`);
+            } else {
+                // Esto podría pasar si el comando fue solo "agregar tarea" sin nada más.
+                nombreTareaParaAnadir = ""; 
+                console.log("No se proporcionó texto para el nombre de la tarea después del prefijo, o el texto reconocido estaba vacío.");
+            }
+            // --- FIN DE LA MODIFICACIÓN CLAVE ---
+            
+            if (nombreTareaParaAnadir.trim()) {
+                 procesarYAnadirTarea(nombreTareaParaAnadir);
+            } else {
+                console.log("No se añadió tarea porque el nombre resultante estaba vacío.");
+            }
+        }
     };
 
     recognition.onspeechend = () => {
         recognition.stop();
-        botonGrabarVoz.disabled = false;
-        botonGrabarVoz.classList.remove('escuchando');
-        botonGrabarVoz.querySelector('i').className = 'fas fa-microphone';
-        console.log("Reconocimiento de voz detenido (fin de habla).");
     };
     
-    recognition.onend = () => { // Se llama después de onresult y onspeechend, o si no hubo habla.
+    recognition.onend = () => {
         botonGrabarVoz.disabled = false;
         botonGrabarVoz.classList.remove('escuchando');
         botonGrabarVoz.querySelector('i').className = 'fas fa-microphone';
-        console.log("Evento 'onend' del reconocimiento de voz.");
+        console.log("Evento 'onend' del reconocimiento de voz (detenido o finalizado).");
     };
 
     recognition.onerror = (event) => {
@@ -208,20 +302,14 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         } else {
             mensajeError += event.error;
         }
-        alert(mensajeError);
-        botonGrabarVoz.disabled = false;
-        botonGrabarVoz.classList.remove('escuchando');
-        botonGrabarVoz.querySelector('i').className = 'fas fa-microphone';
     };
 
     recognition.onnomatch = () => {
-        alert("No se pudo reconocer lo que dijiste. Por favor, intenta de nuevo.");
-        // El botón ya se debería haber re-habilitado por onend o onspeechend
         console.log("No hubo coincidencia en el reconocimiento.");
     };
 
 } else {
     console.warn("La API de Reconocimiento de Voz no es compatible con este navegador.");
     alert("Tu navegador no soporta el reconocimiento de voz. Considera usar Chrome o Edge.");
-    botonGrabarVoz.style.display = 'none'; // Ocultar el botón si no hay soporte
+    if(botonGrabarVoz) botonGrabarVoz.style.display = 'none';
 }
