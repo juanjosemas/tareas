@@ -134,7 +134,7 @@ h1 {
 
 /*SECCION DE TAREA */
 .seccion-tarea {
-    margin-top: 2px;
+    margin-top: -30px;
     flex-grow: 1; /* Permite que esta sección crezca para llenar el espacio vertical */
     overflow-y: auto; /* Scroll solo para esta sección si es necesario */
     min-height: 100px; /* Altura mínima para que no colapse */
