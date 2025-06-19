@@ -19,7 +19,7 @@ body {
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: 100px 0; /* Padding arriba/abajo para el body */
+    padding: 5px 0; /* Padding arriba/abajo para el body */
     overflow-y: auto; /* Scroll en body si .container es más alto que la ventana */
 }
 
