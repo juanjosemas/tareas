@@ -14,12 +14,8 @@ function palabraANumero(palabraNumero) {
     const palabra = palabraNumero.toLowerCase().trim();
     const palabraLimpia = palabra.replace(/[.,!?]$/, '');
     const mapaNumeros = {
-        'cero': '0', 'uno': '1', 'dos': '2', 'tres': '3', 'cuatro': '4',
-        'cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9',
-        'diez': '10', 'once': '11', 'doce': '12', 'trece': '13', 'catorce': '14',
-        'quince': '15', 'dieciséis': '16', 'diecisiete': '17', 'dieciocho': '18',
-        'diecinueve': '19', 'veinte': '20'
-    };
+        'cero': '0', 'uno': '1', 'dos': '2', 'tres': '3', 'cuatro': '4','cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9','diez': '10', 'once': '11', 'doce': '12', 'trece': '13', 'catorce': '14','quince': '15', 'dieciséis': '16', 'diecisiete': '17', 'dieciocho': '18', 'diecinueve': '19', 'veinte': '20', 'veintiuno': '21', 'veintidos': '22', 'veintitres': '23', 'veinticuatro': '24', 'veinticinco': '25','veintiseis': '26', 'veintisiete': '27', 'veintiocho': '28', 'veintinueve': '29', 'treinta': '30', 'cuarenta': '40', 'cincuenta': '50', 'sesenta': '60'         
+};
     const numero = mapaNumeros[palabraLimpia];
     if (numero !== undefined) {
         const puntuacion = palabra.match(/[.,!?]$/);
