@@ -168,7 +168,7 @@ h1 {
 }
 
 .seccion-tarea li i {
-    font-size: 20px;
+    font-size: 17px;
     cursor: pointer;
     transition: color 0.2s;
     flex-shrink: 0;
@@ -182,7 +182,7 @@ h1 {
 }
 
 .seccion-tarea > ul p.text {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     color: whitesmoke;
     font-style: italic;
     flex-grow: 1; 
