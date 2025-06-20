@@ -160,7 +160,7 @@ h1 {
     color: white;
     margin: 10px 5px; /* Margen para que no pegue con los bordes de .seccion-tarea */
     box-shadow: 2px 4px 4px 4px rgba(71, 71, 71, 0.70);
-    font-family: 'Lobster', cursive;
+    font-family: 'Piedra', cursive;
     transition: transform 0.2s ease-out, opacity 0.2s ease-out; 
     position: relative; 
     overflow: hidden; 
