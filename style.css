@@ -14,7 +14,7 @@ body {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)), url('img/nubes.jpg');
+    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/nubes.jpg');
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -27,7 +27,7 @@ body {
     max-width: 100%;
     width: 400px;
     margin: 0 auto; /* Centrado horizontal */
-    font-family: 'Lobster', cursive;
+    font-family: Piedra, cursive;
     color: navy;
     overflow-x: hidden; 
     
@@ -43,7 +43,9 @@ h1 {
     text-align: center;
     flex-shrink: 0; 
     margin-bottom: 10px; 
-    color: red;
+    color: black;
+    font-style: italic;
+    text-shadow: 3px 3px 1px red, 5px 5px 2px red, 8px 8px 3px red;
 }
 
 /*AGREGAR TAREA*/
@@ -272,3 +274,8 @@ h1 {
     touch-action: none;
 }
 /* === FIN ESTILOS PARA DRAG AND DROP === */
+
+
+
+
+
