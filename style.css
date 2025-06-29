@@ -190,13 +190,14 @@ h1 {
 }
 
 #boton-limpiar-completadas {
-    background-color: var(--button-action-bg);
-    color: var(--button-action-text);
+    background-color: red;
+    color: black;
     border: 1px solid var(--container-color);
-    border-radius: 8px;
+    border-radius: 80px;
     padding: 5px 10px;
     cursor: pointer;
-    font-family: 'Prompt', sans-serif;
+    font-family: Piedra;
+    font-style: italic;
 }
 #boton-limpiar-completadas:hover {
     background-color: var(--button-action-hover-bg);
