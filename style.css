@@ -192,12 +192,13 @@ h1 {
 #boton-limpiar-completadas {
     background-color: red;
     color: black;
-    border: 1px solid var(--container-color);
+    border: 5px solid black;
     border-radius: 80px;
-    padding: 5px 10px;
+    padding: 5px 2px;
     cursor: pointer;
     font-family: Piedra;
     font-style: italic;
+    font-size: 10px;
 }
 #boton-limpiar-completadas:hover {
     background-color: var(--button-action-hover-bg);
