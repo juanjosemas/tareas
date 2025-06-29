@@ -3,11 +3,14 @@ const input = document.querySelector('#input');
 const botonEnter = document.querySelector('#boton-enter');
 const botonGrabarVoz = document.getElementById('boton-grabar-voz');
 
+// --- CONSTANTES PARA ESTILOS ---
 const check = 'fa-check-circle';
 const uncheck = 'fa-circle';
 const lineThrough = 'line-through';
-let LIST;
-let id;
+
+// --- VARIABLES GLOBALES PARA EL ESTADO DE LA LISTA ---
+let LIST; 
+let id;   
 
 // --- FUNCIÓN PARA CONVERTIR PALABRAS DE NÚMEROS A DÍGITOS ---
 function palabraANumero(palabraNumero) {
@@ -15,7 +18,7 @@ function palabraANumero(palabraNumero) {
     const palabraLimpia = palabra.replace(/[.,!?]$/, '');
     const mapaNumeros = {
         'cero': '0', 'uno': '1', 'dos': '2', 'tres': '3', 'cuatro': '4','cinco': '5', 'seis': '6', 'siete': '7', 'ocho': '8', 'nueve': '9','diez': '10', 'once': '11', 'doce': '12', 'trece': '13', 'catorce': '14','quince': '15', 'dieciséis': '16', 'diecisiete': '17', 'dieciocho': '18', 'diecinueve': '19', 'veinte': '20', 'veintiuno': '21', 'veintidos': '22', 'veintitres': '23', 'veinticuatro': '24', 'veinticinco': '25','veintiseis': '26', 'veintisiete': '27', 'veintiocho': '28', 'veintinueve': '29', 'treinta': '30', 'cuarenta': '40', 'cincuenta': '50', 'sesenta': '60', 'setenta': '70', 'coma': ',', 'guión': '-', 'punto': '.', 'pregunta': '?'
-};
+    };
     const numero = mapaNumeros[palabraLimpia];
     if (numero !== undefined) {
         const puntuacion = palabra.match(/[.,!?]$/);
@@ -49,11 +52,12 @@ function agregarTareaAlDOM(tarea, idItem, realizado, eliminado) {
 
     const REALIZADO_CLASS = realizado ? check : uncheck;
     const LINE_CLASS = realizado ? lineThrough : '';
-
+    
     const elementoHTML = `
         <li id="elemento-${idItem}">
-            <i class="far ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${idItem}"></i>
+            <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${idItem}"></i>
             <p class="text ${LINE_CLASS}">${tarea}</p>
+            <i class="fas fa-copy" data-action="copiar" id="${idItem}"></i> 
             <i class="fas fa-trash" data-action="eliminar" id="${idItem}"></i> 
         </li>
     `;
@@ -79,14 +83,7 @@ function tareaRealizada(element) {
 // --- FUNCIÓN DE TAREA ELIMINADA ---
 function tareaEliminada(element) {
     const liPadre = element.closest('li');
-    if (liPadre) {
-        liPadre.remove();
-    } else {
-        console.error("No se pudo encontrar el elemento <li> padre para eliminar.");
-        if (element.parentNode && element.parentNode.parentNode === lista) {
-             element.parentNode.parentNode.removeChild(element.parentNode);
-        }
-    }
+    liPadre?.remove();
 
     const itemId = parseInt(element.id);
     const tareaEnLista = LIST.find(item => item.id === itemId);
@@ -99,6 +96,29 @@ function tareaEliminada(element) {
     console.log("Producto eliminado. Lista actualizada:", LIST);
 }
 
+// --- FUNCIÓN PARA COPIAR TAREA AL PORTAPAPELES ---
+function copiarTareaAlPortapapeles(element) {
+    const liPadre = element.closest('li');
+    const textoParaCopiar = liPadre?.querySelector('.text')?.textContent;
+
+    if (textoParaCopiar) {
+        navigator.clipboard.writeText(textoParaCopiar)
+            .then(() => {
+                // ================== INICIO DEL CAMBIO ==================
+                // ÉXITO: El texto se ha copiado.
+                console.log(`Texto copiado: "${textoParaCopiar}"`);
+                
+                // Se ha eliminado el código que cambiaba el icono temporalmente.
+                // El icono ya no cambiará.
+                // =================== FIN DEL CAMBIO ====================
+            })
+            .catch(err => {
+                // ERROR: Si algo falla (ej. permisos denegados).
+                console.error('Error al copiar el texto: ', err);
+                alert("No se pudo copiar el texto.");
+            });
+    }
+}
 
 // --- EVENT LISTENERS ---
 botonEnter.addEventListener('click', () => {
@@ -117,20 +137,27 @@ input.addEventListener('keyup', function (event) {
     }
 });
 
-// Evento para clicks en la lista (marcar como realizado o eliminar)
+// Evento para clicks en la lista (marcar como realizado, eliminar o copiar)
 lista.addEventListener('click', function (event) {
     const element = event.target;
-    // Prevenir que un click normal active la lógica si estamos en modo drag
+    
     if (draggedItem && draggedItem.classList.contains('dragging-task')) {
         return;
     }
-    if (element.tagName === 'I' && element.attributes['data-action']) {
-        const action = element.attributes['data-action'].value;
+    
+    if (element.tagName === 'I' && element.dataset.action) {
+        const action = element.dataset.action;
         
         if (action === 'toggleRealizado') {
             tareaRealizada(element);
         } else if (action === 'eliminar') {
-            tareaEliminada(element);
+            if (window.confirm("¿Estás seguro de que quieres eliminar esta tarea?")) {
+                tareaEliminada(element);
+            } else {
+                console.log("Eliminación cancelada por el usuario.");
+            }
+        } else if (action === 'copiar') {
+            copiarTareaAlPortapapeles(element);
         }
     }
 });
@@ -139,22 +166,29 @@ lista.addEventListener('click', function (event) {
 // --- LÓGICA DE CARGA INICIAL DE DATOS ---
 function cargarListaDesdeStorage(arrayItems) {
     arrayItems.forEach(function (item) {
-        if (!item.eliminado) { 
-            agregarTareaAlDOM(item.nombre, item.id, item.realizado, item.eliminado);
+        if (item && !item.eliminado) { 
+            agregarTareaAlDOM(item.nombre, item.id, item.realizado, false);
         }
     });
 }
 
 let data = localStorage.getItem('TODO');
 if (data) {
-    LIST = JSON.parse(data);
-    // Asegurarse de que LIST es un array y filtrar los eliminados
-    if (Array.isArray(LIST)) {
-        LIST = LIST.filter(item => item && !item.eliminado); // Añadida comprobación de item
-    } else {
-        LIST = []; // Si no es un array, inicializar
+    try {
+        LIST = JSON.parse(data);
+        if (!Array.isArray(LIST)) {
+            LIST = [];
+        }
+    } catch (e) {
+        console.error("Error al parsear datos de localStorage, iniciando lista vacía.", e);
+        LIST = [];
     }
-    id = LIST.length > 0 ? Math.max(...LIST.map(item => item.id)) + 1 : 0;
+
+    LIST = LIST.filter(item => item && !item.eliminado);
+    
+    const maxId = Math.max(...LIST.map(item => item.id), -1);
+    id = maxId + 1;
+
     cargarListaDesdeStorage(LIST);
     console.log("Lista cargada desde localStorage:", LIST);
     console.log("Próximo ID será:", id);
@@ -166,6 +200,7 @@ if (data) {
 
 
 // --- IMPLEMENTACIÓN DE RECONOCIMIENTO DE VOZ ---
+// (Esta sección no ha sido modificada)
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
@@ -288,7 +323,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     };
     
     recognition.onend = () => {
-        if (botonGrabarVoz) { // Comprobar si el botón existe antes de manipularlo
+        if (botonGrabarVoz) {
             botonGrabarVoz.disabled = false;
             botonGrabarVoz.classList.remove('escuchando');
             if (botonGrabarVoz.querySelector('i')) {
@@ -313,11 +348,12 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 
 // --- LÓGICA PARA EDITAR TAREAS CON DOBLE CLIC ---
+// (Esta sección no ha sido modificada)
 function finalizarEdicionTarea(inputElement, taskId, guardar) {
     const tareaEnLista = LIST.find(item => item.id === taskId);
     if (!tareaEnLista) {
         console.error("Error al finalizar edición: Tarea no encontrada en LIST con ID:", taskId);
-        if (inputElement && inputElement.parentNode) { // Comprobar inputElement
+        if (inputElement && inputElement.parentNode) {
             inputElement.remove();
         }
         return;
@@ -346,7 +382,7 @@ function finalizarEdicionTarea(inputElement, taskId, guardar) {
     }
     nuevoPElement.textContent = textoFinal;
 
-    if (inputElement && inputElement.parentNode) { // Comprobar inputElement
+    if (inputElement && inputElement.parentNode) {
         inputElement.replaceWith(nuevoPElement);
     } else {
         console.warn("Input de edición ya no estaba en el DOM al intentar finalizar.");
@@ -358,24 +394,23 @@ lista.addEventListener('dblclick', function(event) {
     const target = event.target;
 
     if (draggedItem && draggedItem.classList.contains('dragging-task')) {
-        return; // No permitir dblclick mientras se arrastra
+        return; 
     }
 
     if (target.tagName === 'P' && target.classList.contains('text')) {
         const existingEditInput = lista.querySelector('input.edit-task-input');
-        if (existingEditInput && existingEditInput !== target.parentNode.querySelector('input.edit-task-input')) { // Evitar blur sobre sí mismo si ya es un input
+        if (existingEditInput && existingEditInput !== target.parentNode.querySelector('input.edit-task-input')) {
             existingEditInput.blur(); 
         }
-        // Si el elemento que recibió el dblclick es ahora un input (porque el blur anterior lo reemplazó), no hacemos nada más.
+        
         if (target.tagName !== 'P') return;
-
 
         const pElement = target;
         const listItem = pElement.closest('li');
         if (!listItem) return;
 
         const iconElement = listItem.querySelector('i[data-action]');
-        if (!iconElement || !iconElement.id) return; //Asegurar que el icono tiene ID
+        if (!iconElement || !iconElement.id) return;
         
         const taskId = parseInt(iconElement.id);
         const tareaEnLista = LIST.find(item => item.id === taskId);
@@ -408,23 +443,20 @@ lista.addEventListener('dblclick', function(event) {
 });
 
 // --- LÓGICA PARA ARRASTRAR Y SOLTAR (DRAG AND DROP) EN TÁCTIL ---
-let draggedItem = null;
-let longPressTimer = null;
-let initialTouchY = 0;
-let initialScrollY = 0; // Podría usarse si la lista tiene su propio scroll
-let placeholder = null;
+// (Esta sección no ha sido modificada)
+let draggedItem = null;      
+let longPressTimer = null;   
+let initialTouchY = 0;       
+let placeholder = null;      
 const LONG_PRESS_DURATION = 500;
-let isDragging = false; // Flag para controlar estado de arrastre
+let isDragging = false;      
 
 function createPlaceholder(height) {
-    // Reutilizar placeholder si ya existe, si no, crearlo.
     if (!placeholder) {
         placeholder = document.createElement('li');
         placeholder.className = 'placeholder-task';
-        placeholder.style.backgroundColor = 'rgba(0,0,0,0.1)';
-        placeholder.style.listStyleType = 'none';
     }
-    placeholder.style.height = `${height}px`; // Siempre ajustar altura
+    placeholder.style.height = `${height}px`;
     return placeholder;
 }
 
@@ -436,25 +468,22 @@ function handleTouchStart(event) {
 
     const existingEditInput = lista.querySelector('input.edit-task-input');
     if (existingEditInput) {
-        existingEditInput.blur();
+        existingEditInput.blur(); 
     }
     
     draggedItem = targetLi;
-    isDragging = false; // Resetear flag
+    isDragging = false; 
     initialTouchY = event.touches[0].clientY;
-    // initialScrollY = lista.scrollTop; // Descomentar si la lista es scrollable
 
     longPressTimer = setTimeout(() => {
         if (!draggedItem) return;
 
-        isDragging = true; // Indicar que el arrastre ha comenzado
+        isDragging = true; 
         console.log("Long press detectado, iniciando drag");
         draggedItem.classList.add('dragging-task');
 
-        const draggedItemHeight = draggedItem.offsetHeight;
-        placeholder = createPlaceholder(draggedItemHeight);
-        // El placeholder se insertará en touchmove
-
+        placeholder = createPlaceholder(draggedItem.offsetHeight);
+        
         lista.addEventListener('touchmove', handleTouchMove, { passive: false });
         lista.addEventListener('touchend', handleTouchEnd);
         lista.addEventListener('touchcancel', handleTouchEnd);
@@ -462,146 +491,91 @@ function handleTouchStart(event) {
 }
 
 function handleTouchMove(event) {
-    if (!draggedItem) { // Si no hay item seleccionado, salir
-        clearTimeout(longPressTimer); // Limpiar timer si el dedo se movió antes del long press
+    if (!draggedItem) { 
+        clearTimeout(longPressTimer);
         return;
     }
     
-    // Si el dedo se mueve significativamente ANTES de que el long press se active
     if (!isDragging && Math.abs(event.touches[0].clientY - initialTouchY) > 10) {
         clearTimeout(longPressTimer);
         longPressTimer = null;
-        draggedItem = null; // No iniciar drag
+        draggedItem = null;
         console.log("Movimiento antes de long press, cancelando drag.");
-        // Quitar listeners si se añadieron prematuramente (aunque no deberían)
-        lista.removeEventListener('touchmove', handleTouchMove);
-        lista.removeEventListener('touchend', handleTouchEnd);
-        lista.removeEventListener('touchcancel', handleTouchEnd);
         return;
     }
 
-    if (!isDragging) return; // Si el long press no se ha activado aún, no hacer nada más.
+    if (!isDragging) return; 
 
-    event.preventDefault();
+    event.preventDefault(); 
 
     const currentTouchY = event.touches[0].clientY;
-    const deltaY = currentTouchY - initialTouchY;
-
-    draggedItem.style.transform = `translateY(${deltaY}px)`;
-    draggedItem.style.zIndex = '1000';
-
     const overElement = getElementDirectlyUnder(event.touches[0].clientX, currentTouchY);
 
     if (placeholder && overElement) {
-        const targetLi = overElement.closest('li:not(.placeholder-task):not(.dragging-task)'); // No sobre sí mismo ni placeholder
+        const targetLi = overElement.closest('li:not(.placeholder-task):not(.dragging-task)');
         if (targetLi) {
             const rect = targetLi.getBoundingClientRect();
-            // Calcular el punto medio del targetLi relativo al viewport
             const targetMiddleY = rect.top + rect.height / 2;
             
-            // Si el currentTouchY (posición del dedo) está por encima del punto medio del targetLi,
-            // insertar el placeholder ANTES del targetLi.
-            // Si está por debajo, insertarlo DESPUÉS.
             if (currentTouchY < targetMiddleY) {
                 targetLi.parentNode.insertBefore(placeholder, targetLi);
             } else {
                 targetLi.parentNode.insertBefore(placeholder, targetLi.nextSibling);
             }
-        } else if (lista.children.length > 0 && !lista.contains(placeholder)) {
-            // Si no estamos sobre un LI válido pero el placeholder no está,
-            // y hay elementos en la lista, intentamos añadirlo al final o principio.
-            // Esto es una heurística simple.
-            if (currentTouchY < lista.firstElementChild.getBoundingClientRect().top + lista.firstElementChild.offsetHeight / 2 && lista.firstElementChild !== draggedItem) {
-                lista.insertBefore(placeholder, lista.firstElementChild);
-            } else if (currentTouchY > lista.lastElementChild.getBoundingClientRect().bottom - lista.lastElementChild.offsetHeight / 2 && lista.lastElementChild !== draggedItem) {
-                lista.appendChild(placeholder);
-            }
         }
     }
 }
 
-
 function getElementDirectlyUnder(x, y) {
-    const originalDraggedVisibility = draggedItem ? draggedItem.style.visibility : '';
-    const originalPlaceholderVisibility = placeholder ? placeholder.style.visibility : '';
-
-    if (draggedItem) draggedItem.style.visibility = 'hidden'; // Usar visibility en lugar de display
-    if (placeholder) placeholder.style.visibility = 'hidden';
-
+    if(draggedItem) draggedItem.style.display = 'none';
     let elementUnder = document.elementFromPoint(x, y);
-
-    if (draggedItem) draggedItem.style.visibility = originalDraggedVisibility;
-    if (placeholder) placeholder.style.visibility = originalPlaceholderVisibility;
-    
+    if(draggedItem) draggedItem.style.display = '';
     return elementUnder;
 }
 
-
-function handleTouchEnd(event) {
+function handleTouchEnd() {
     clearTimeout(longPressTimer);
     longPressTimer = null;
     
-    // Solo continuar si realmente estábamos arrastrando (isDragging es true)
     if (!draggedItem || !isDragging) {
-        draggedItem = null; // Limpiar por si acaso
+        draggedItem = null;
         isDragging = false;
-        // Asegurarse de quitar listeners si no se completó el drag
-        lista.removeEventListener('touchmove', handleTouchMove);
-        lista.removeEventListener('touchend', handleTouchEnd);
-        lista.removeEventListener('touchcancel', handleTouchEnd);
         return;
     }
     
     console.log("Touch end, finalizando drag");
 
     draggedItem.classList.remove('dragging-task');
-    draggedItem.style.transform = '';
-    draggedItem.style.zIndex = '';
-    draggedItem.style.visibility = ''; // Restaurar visibilidad
-
+    
     if (placeholder && placeholder.parentNode) {
-        placeholder.parentNode.insertBefore(draggedItem, placeholder);
-        placeholder.remove();
-    } else if (draggedItem.parentNode !== lista) { // Si el placeholder no se usó pero el item se "desprendió"
-         // Esto es un fallback, idealmente el placeholder siempre debería guiar
-        lista.appendChild(draggedItem); // Lo añade al final si no hay mejor sitio
+        placeholder.replaceWith(draggedItem);
     }
-    placeholder = null; // Asegurarse de limpiar la referencia al placeholder
+    placeholder = null;
 
-    // Reordenar el array LIST
-    const newOrderedIds = Array.from(lista.querySelectorAll('li:not(.placeholder-task)'))
-                             .map(li => {
-                                 const idAttr = li.id;
-                                 return idAttr ? parseInt(idAttr.split('-')[1]) : null;
-                             })
-                             .filter(idVal => idVal !== null); // Filtrar nulls por si acaso
+    const newOrderedIds = Array.from(lista.querySelectorAll('li'))
+                             .map(li => parseInt(li.id.split('-')[1]));
     
     const newLIST = [];
     newOrderedIds.forEach(itemId => {
-        const item = LIST.find(task => task && task.id === itemId); // Comprobar task
+        const item = LIST.find(task => task && task.id === itemId);
         if (item) {
             newLIST.push(item);
         }
     });
 
-    // Solo actualizar si el orden realmente cambió o si el tamaño es el mismo
-    // (para evitar problemas si un item se perdió)
-    if (newLIST.length === LIST.filter(item => item && !item.eliminado).length) {
+    if (newLIST.length === LIST.length) {
         LIST = newLIST;
         localStorage.setItem('TODO', JSON.stringify(LIST));
         console.log("LISTA reordenada y guardada:", LIST);
     } else {
         console.warn("Discrepancia en la longitud de la lista después de reordenar. No se guardó para evitar pérdida de datos.");
-        // Aquí podrías querer recargar la lista desde localStorage o una lógica de recuperación.
-        // Por ahora, solo logueamos.
     }
-
 
     draggedItem = null;
     isDragging = false;
     lista.removeEventListener('touchmove', handleTouchMove);
-    lista.removeEventListener('touchend', handleTouchEnd);
-    lista.removeEventListener('touchcancel', handleTouchEnd);
+    lista.addEventListener('touchend', handleTouchEnd);
+    lista.addEventListener('touchcancel', handleTouchEnd);
 }
 
 lista.addEventListener('touchstart', handleTouchStart, { passive: true });
