@@ -15,23 +15,35 @@
 <body>
    
   <div class="container">
-    <!-- CAMBIO: Se han quitado las etiquetas <u> e <i>. El estilo se aplica ahora desde CSS. -->
+    <!-- ================== INICIO DEL CAMBIO ================== -->
+    <!-- NUEVO: Botón para cambiar el tema (Dark/Light Mode) -->
+    <button id="theme-toggle-button" title="Cambiar tema">
+        <i class="fas fa-moon"></i>
+    </button>
+    <!-- =================== FIN DEL CAMBIO ==================== -->
+
     <h1><img src="img/Juanjo.ico" class="ico" width="35">Lista de tareas</h1>
   
     <br>
      
     <div class="perfil"> </div> 
-    <!-- - - - - - - - - - - - - - - - - -->
    
     <div class="agregar-tarea">
         <input type="text" id="input" placeholder="Nueva tarea">
         <i id="boton-enter" class="fas fa-check-circle"></i>
-        <!-- === NUEVO BOTÓN PARA GRABAR VOZ === -->
         <button id="boton-grabar-voz" title="Agregar producto por voz">
             <i class="fas fa-microphone"></i>
         </button>
-        <!-- === FIN NUEVO BOTÓN === -->
     </div> 
+
+    <!-- ================== INICIO DEL CAMBIO ================== -->
+    <!-- NUEVO: Contenedor para acciones de la lista, como limpiar completadas -->
+    <div class="acciones-lista">
+        <button id="boton-limpiar-completadas" class="hidden" title="Eliminar todas las tareas completadas">
+            Limpiar Completadas
+        </button>
+    </div>
+    <!-- =================== FIN DEL CAMBIO ==================== -->
     
     <br>
     
