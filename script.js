@@ -5,7 +5,6 @@ const botonGrabarVoz = document.getElementById('boton-grabar-voz');
 const botonLimpiarCompletadas = document.getElementById('boton-limpiar-completadas');
 const themeToggleButton = document.getElementById('theme-toggle-button');
 
-// ================== INICIO DEL CAMBIO: NUEVOS ELEMENTOS ==================
 const notificationContainer = document.getElementById('notification-container');
 const notificationMessage = document.getElementById('notification-message');
 const undoButton = document.getElementById('undo-button');
@@ -13,7 +12,6 @@ const mensajeListaVacia = document.getElementById('mensaje-lista-vacia');
 const botonExportar = document.getElementById('boton-exportar');
 const botonImportar = document.getElementById('boton-importar');
 const importFileInput = document.getElementById('import-file-input');
-// =================== FIN DEL CAMBIO ====================
 
 // --- CONSTANTES PARA ESTILOS ---
 const check = 'fa-check-circle';
@@ -160,8 +158,13 @@ function undoDelete() {
 }
 
 // ================== INICIO DEL CAMBIO: FUNCIÓN EXPORTAR CORREGIDA ==================
-// Función para exportar la lista de tareas
-function exportarTareas() {
+function exportarTareas(event) {
+    // Es crucial prevenir la acción por defecto del clic del botón
+    // para evitar que el navegador intente navegar a algún sitio.
+    if (event) {
+        event.preventDefault();
+    }
+
     if (LIST.length === 0) {
         showNotification("No hay tareas para exportar.");
         return;
@@ -173,30 +176,29 @@ function exportarTareas() {
         const url = URL.createObjectURL(dataBlob);
 
         const link = document.createElement('a');
-        link.style.display = 'none'; // No es necesario que sea visible
+        link.style.display = 'none';
         link.href = url;
         link.download = `tareas-backup-${new Date().toISOString().slice(0, 10)}.json`;
         
         document.body.appendChild(link);
         link.click();
-
-        // Usamos un temporizador para dar tiempo al navegador a procesar el clic
-        // antes de eliminar el enlace y el objeto URL. ¡Esta es la clave!
+        
+        // Usamos un temporizador para dar tiempo al navegador a procesar la descarga
+        // antes de eliminar el enlace. Esto soluciona el problema.
         setTimeout(() => {
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
-        }, 100);
+        }, 200); // Damos un poco más de tiempo por si acaso
 
         showNotification("Lista de tareas exportada con éxito.");
 
     } catch (error) {
-        console.error("Error al exportar:", error);
+        console.error("Error detallado al exportar:", error);
         showNotification("Error al intentar exportar la lista.");
     }
 }
 // =================== FIN DEL CAMBIO ====================
 
-// Función para manejar la importación de tareas
 function importarTareas(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -249,7 +251,14 @@ input.addEventListener('keyup', (event) => {
 
 botonLimpiarCompletadas.addEventListener('click', limpiarTareasCompletadas);
 undoButton.addEventListener('click', undoDelete);
-botonExportar.addEventListener('click', exportarTareas);
+
+// ================== INICIO DEL CAMBIO: LISTENER CORREGIDO ==================
+// Pasamos el objeto 'event' a la función para poder controlarlo.
+botonExportar.addEventListener('click', function(event) {
+    exportarTareas(event); 
+});
+// =================== FIN DEL CAMBIO ====================
+
 botonImportar.addEventListener('click', () => importFileInput.click());
 importFileInput.addEventListener('change', importarTareas);
 
