@@ -34,11 +34,6 @@
     </div> 
 
     <div class="acciones-lista">
-        <!-- ================== INICIO DEL CAMBIO ================== -->
-        <button id="boton-exportar" title="Guardar lista en un archivo">Exportar</button>
-        <button id="boton-importar" title="Cargar lista desde un archivo">Importar</button>
-        <input type="file" id="import-file-input" class="hidden" accept=".json">
-        <!-- =================== FIN DEL CAMBIO ==================== -->
         <button id="boton-limpiar-completadas" class="hidden" title="Eliminar todas las tareas completadas">
             Limpiar Completadas
         </button>
@@ -50,17 +45,23 @@
         <ul id="lista">
             <!-- Los elementos de la lista se generarán aquí con JS -->
         </ul>
+        <!-- ================== INICIO DEL CAMBIO ================== -->
+        <!-- NUEVO: Mensaje para cuando la lista está vacía -->
         <div id="mensaje-lista-vacia" class="hidden">
             <p>¡No hay tareas pendientes! Añade una para empezar.</p>
         </div>
+        <!-- =================== FIN DEL CAMBIO ==================== -->
     </div>   
  
   </div>
     
+  <!-- ================== INICIO DEL CAMBIO ================== -->
+  <!-- NUEVO: Contenedor para notificaciones (Toast/Snackbar) -->
   <div id="notification-container">
       <span id="notification-message"></span>
       <button id="undo-button" class="hidden">Deshacer</button>
   </div>
+  <!-- =================== FIN DEL CAMBIO ==================== -->
 
 <script src="script.js"></script>
 </body>

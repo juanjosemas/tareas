@@ -5,13 +5,12 @@ const botonGrabarVoz = document.getElementById('boton-grabar-voz');
 const botonLimpiarCompletadas = document.getElementById('boton-limpiar-completadas');
 const themeToggleButton = document.getElementById('theme-toggle-button');
 
+// ================== INICIO DEL CAMBIO: NUEVOS ELEMENTOS ==================
 const notificationContainer = document.getElementById('notification-container');
 const notificationMessage = document.getElementById('notification-message');
 const undoButton = document.getElementById('undo-button');
 const mensajeListaVacia = document.getElementById('mensaje-lista-vacia');
-const botonExportar = document.getElementById('boton-exportar');
-const botonImportar = document.getElementById('boton-importar');
-const importFileInput = document.getElementById('import-file-input');
+// =================== FIN DEL CAMBIO ====================
 
 // --- CONSTANTES PARA ESTILOS ---
 const check = 'fa-check-circle';
@@ -21,8 +20,11 @@ const lineThrough = 'line-through';
 // --- VARIABLES GLOBALES ---
 let LIST; 
 let id;   
-let notificationTimer = null;
-let lastDeleted = null;
+// ================== INICIO DEL CAMBIO: VARIABLES PARA NUEVAS FUNCIONES ==================
+let notificationTimer = null; // Para controlar el temporizador de la notificación
+let lastDeleted = null;       // Para guardar la última tarea eliminada (para el Deshacer)
+// =================== FIN DEL CAMBIO ====================
+
 
 // --- FUNCIÓN PARA CONVERTIR PALABRAS DE NÚMEROS A DÍGITOS ---
 function palabraANumero(palabraNumero) {
@@ -53,7 +55,8 @@ function procesarYAnadirTarea(nombreTarea) {
         localStorage.setItem('TODO', JSON.stringify(LIST));
         id++;
         actualizarVisibilidadBotonLimpiar(); 
-        checkListEmptyState();
+        checkListEmptyState(); // Actualizar estado de lista vacía
+        console.log("Producto añadido:", tareaLimpia, "ID actual para próximo:", id);
         return true;
     }
     return false;
@@ -62,8 +65,12 @@ function procesarYAnadirTarea(nombreTarea) {
 // --- FUNCIÓN PARA AGREGAR TAREA AL DOM ---
 function agregarTareaAlDOM(tarea, idItem, realizado, eliminado) {
     if (eliminado) { return; }
+
     const REALIZADO_CLASS = realizado ? check : uncheck;
     const LINE_CLASS = realizado ? lineThrough : '';
+    
+    // No usamos la animación al cargar la página, solo para nuevas tareas.
+    // La animación se aplica directamente por CSS a todos los 'li' nuevos.
     const elementoHTML = `
         <li id="elemento-${idItem}">
             <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${idItem}"></i>
@@ -80,6 +87,7 @@ function tareaRealizada(element) {
     element.classList.toggle(check);
     element.classList.toggle(uncheck);
     element.parentNode.querySelector('.text').classList.toggle(lineThrough);
+    
     const itemId = parseInt(element.id);
     const tareaEnLista = LIST.find(item => item.id === itemId);
     if (tareaEnLista) {
@@ -93,144 +101,105 @@ function tareaRealizada(element) {
 function tareaEliminada(element) {
     const liPadre = element.closest('li');
     const itemId = parseInt(element.id);
+
+    // Guardamos la tarea y su posición por si se quiere deshacer
     const tareaIndex = LIST.findIndex(item => item.id === itemId);
     if (tareaIndex > -1) {
         lastDeleted = { item: LIST[tareaIndex], index: tareaIndex };
+        
+        // La eliminamos del array y guardamos
         LIST.splice(tareaIndex, 1);
         localStorage.setItem('TODO', JSON.stringify(LIST));
+
+        // Animación de salida
         liPadre.classList.add('removing');
-        liPadre.addEventListener('transitionend', () => liPadre?.remove());
+        // Esperamos que termine la animación para quitar el elemento del DOM
+        liPadre.addEventListener('transitionend', () => {
+            liPadre?.remove();
+        });
+
         actualizarVisibilidadBotonLimpiar();
-        checkListEmptyState();
-        showNotification('Tarea eliminada', true);
+        checkListEmptyState(); // Comprobar si la lista quedó vacía
+        showNotification('Tarea eliminada', true); // Mostrar notificación con botón Deshacer
     }
 }
 
 // --- FUNCIÓN PARA COPIAR TAREA AL PORTAPAPELES ---
 function copiarTareaAlPortapapeles(element) {
-    const textoParaCopiar = element.closest('li')?.querySelector('.text')?.textContent;
+    const liPadre = element.closest('li');
+    const textoParaCopiar = liPadre?.querySelector('.text')?.textContent;
+
     if (textoParaCopiar) {
         navigator.clipboard.writeText(textoParaCopiar)
-            .then(() => showNotification('¡Tarea copiada al portapapeles!'))
-            .catch(err => console.error('Error al copiar el texto: ', err));
+            .then(() => {
+                showNotification('¡Tarea copiada al portapapeles!');
+                console.log(`Texto copiado: "${textoParaCopiar}"`);
+            })
+            .catch(err => {
+                console.error('Error al copiar el texto: ', err);
+                alert("No se pudo copiar el texto.");
+            });
     }
 }
 
-// ================== FUNCIONES DE UI Y DATOS ==================
+// ================== INICIO DEL CAMBIO: NUEVAS FUNCIONES DE UI ==================
+// Muestra u oculta el botón de "Limpiar Completadas"
 function actualizarVisibilidadBotonLimpiar() {
-    botonLimpiarCompletadas.classList.toggle('hidden', !LIST.some(item => item.realizado));
+    const hayCompletadas = LIST.some(item => item.realizado);
+    botonLimpiarCompletadas.classList.toggle('hidden', !hayCompletadas);
 }
 
+// Comprueba si la lista está vacía y muestra un mensaje
 function checkListEmptyState() {
     mensajeListaVacia.classList.toggle('hidden', LIST.length > 0);
 }
 
+// Lógica para limpiar todas las tareas completadas
 function limpiarTareasCompletadas() {
     if (window.confirm("¿Estás seguro de que quieres eliminar TODAS las tareas completadas?")) {
         LIST = LIST.filter(item => !item.realizado);
         localStorage.setItem('TODO', JSON.stringify(LIST));
+        
+        // Re-renderizamos toda la lista
         lista.innerHTML = '';
         cargarListaDesdeStorage(LIST);
         showNotification('Tareas completadas eliminadas');
+        console.log("Tareas completadas eliminadas.");
     }
 }
 
+// Muestra una notificación (toast)
 function showNotification(message, showUndo = false) {
-    clearTimeout(notificationTimer);
+    clearTimeout(notificationTimer); // Cancela el timer anterior si existe
+    
     notificationMessage.textContent = message;
     notificationContainer.classList.add('show');
+    
     undoButton.classList.toggle('hidden', !showUndo);
+
+    // La notificación se oculta después de 5 segundos
     notificationTimer = setTimeout(() => {
         notificationContainer.classList.remove('show');
-        lastDeleted = null;
+        lastDeleted = null; // Si el tiempo pasa, ya no se puede deshacer
     }, 5000);
 }
 
+// Función para deshacer la eliminación
 function undoDelete() {
     if (lastDeleted) {
+        // Reinsertamos el elemento en su posición original en el array
         LIST.splice(lastDeleted.index, 0, lastDeleted.item);
         localStorage.setItem('TODO', JSON.stringify(LIST));
+
+        // Limpiamos y volvemos a renderizar toda la lista para mantener el orden
         lista.innerHTML = '';
         cargarListaDesdeStorage(LIST);
-        lastDeleted = null;
-        notificationContainer.classList.remove('show');
-    }
-}
-
-// ================== INICIO DEL CAMBIO: FUNCIÓN EXPORTAR CORREGIDA ==================
-function exportarTareas(event) {
-    // Es crucial prevenir la acción por defecto del clic del botón
-    // para evitar que el navegador intente navegar a algún sitio.
-    if (event) {
-        event.preventDefault();
-    }
-
-    if (LIST.length === 0) {
-        showNotification("No hay tareas para exportar.");
-        return;
-    }
-    
-    try {
-        const dataStr = JSON.stringify(LIST, null, 2);
-        const dataBlob = new Blob([dataStr], { type: "application/json" });
-        const url = URL.createObjectURL(dataBlob);
-
-        const link = document.createElement('a');
-        link.style.display = 'none';
-        link.href = url;
-        link.download = `tareas-backup-${new Date().toISOString().slice(0, 10)}.json`;
         
-        document.body.appendChild(link);
-        link.click();
-        
-        // Usamos un temporizador para dar tiempo al navegador a procesar la descarga
-        // antes de eliminar el enlace. Esto soluciona el problema.
-        setTimeout(() => {
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }, 200); // Damos un poco más de tiempo por si acaso
-
-        showNotification("Lista de tareas exportada con éxito.");
-
-    } catch (error) {
-        console.error("Error detallado al exportar:", error);
-        showNotification("Error al intentar exportar la lista.");
+        lastDeleted = null; // Limpiamos la variable
+        notificationContainer.classList.remove('show'); // Ocultamos la notificación
     }
 }
 // =================== FIN DEL CAMBIO ====================
-
-function importarTareas(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            const importedList = JSON.parse(e.target.result);
-            if (!Array.isArray(importedList)) {
-                throw new Error("El archivo no contiene una lista válida.");
-            }
-            const esValido = importedList.every(item => typeof item.nombre === 'string' && typeof item.id === 'number');
-            if (!esValido) {
-                throw new Error("El formato de las tareas en el archivo es incorrecto.");
-            }
-
-            if (confirm("Esto reemplazará tu lista actual con el contenido del archivo. ¿Deseas continuar?")) {
-                LIST = importedList;
-                id = Math.max(...LIST.map(item => item.id), -1) + 1;
-                localStorage.setItem('TODO', JSON.stringify(LIST));
-                lista.innerHTML = '';
-                cargarListaDesdeStorage(LIST);
-                showNotification("¡Lista importada con éxito!");
-            }
-        } catch (error) {
-            showNotification(`Error: ${error.message}`);
-        } finally {
-            importFileInput.value = '';
-        }
-    };
-    reader.readAsText(file);
-}
 
 // --- EVENT LISTENERS ---
 botonEnter.addEventListener('click', () => {
@@ -240,7 +209,7 @@ botonEnter.addEventListener('click', () => {
     }
 });
 
-input.addEventListener('keyup', (event) => {
+input.addEventListener('keyup', function (event) {
     if (event.key === 'Enter') {
         if (procesarYAnadirTarea(input.value)) {
             input.value = '';
@@ -250,76 +219,93 @@ input.addEventListener('keyup', (event) => {
 });
 
 botonLimpiarCompletadas.addEventListener('click', limpiarTareasCompletadas);
-undoButton.addEventListener('click', undoDelete);
-
-// ================== INICIO DEL CAMBIO: LISTENER CORREGIDO ==================
-// Pasamos el objeto 'event' a la función para poder controlarlo.
-botonExportar.addEventListener('click', function(event) {
-    exportarTareas(event); 
-});
-// =================== FIN DEL CAMBIO ====================
-
-botonImportar.addEventListener('click', () => importFileInput.click());
-importFileInput.addEventListener('change', importarTareas);
+undoButton.addEventListener('click', undoDelete); // Listener para el botón Deshacer
 
 themeToggleButton.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
+    
     const icon = themeToggleButton.querySelector('i');
-    let theme = document.body.classList.contains('dark-mode') ? 'dark' : 'light';
-    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    let theme = 'light';
+    if (document.body.classList.contains('dark-mode')) {
+        theme = 'dark';
+        icon.className = 'fas fa-sun';
+    } else {
+        icon.className = 'fas fa-moon';
+    }
     localStorage.setItem('theme', theme);
 });
 
-lista.addEventListener('click', (event) => {
-    if (draggedItem?.classList.contains('dragging-task')) return;
+lista.addEventListener('click', function (event) {
     const element = event.target;
+    if (draggedItem && draggedItem.classList.contains('dragging-task')) { return; }
+    
     if (element.tagName === 'I' && element.dataset.action) {
         const action = element.dataset.action;
-        if (action === 'toggleRealizado') tareaRealizada(element);
-        else if (action === 'eliminar') tareaEliminada(element);
-        else if (action === 'copiar') copiarTareaAlPortapapeles(element);
+        
+        if (action === 'toggleRealizado') {
+            tareaRealizada(element);
+        } else if (action === 'eliminar') {
+            // Ya no mostramos el confirm aquí, la opción de deshacer es suficiente
+            tareaEliminada(element);
+        } else if (action === 'copiar') {
+            copiarTareaAlPortapapeles(element);
+        }
     }
 });
 
 // --- LÓGICA DE CARGA INICIAL DE DATOS ---
 function cargarListaDesdeStorage(arrayItems) {
-    lista.innerHTML = '';
-    arrayItems.forEach(item => {
+    arrayItems.forEach(function (item) {
         if (item && !item.eliminado) { 
+            // Añadimos las tareas sin animación al cargar la página
+            const li = document.createElement('li');
+            li.id = `elemento-${item.id}`;
             const REALIZADO_CLASS = item.realizado ? check : uncheck;
             const LINE_CLASS = item.realizado ? lineThrough : '';
-            const elementoHTML = `
-                <li id="elemento-${item.id}" style="animation: none;">
-                    <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${item.id}"></i>
-                    <p class="text ${LINE_CLASS}">${item.nombre}</p>
-                    <i class="fas fa-copy" data-action="copiar" id="${item.id}"></i> 
-                    <i class="fas fa-trash" data-action="eliminar" id="${item.id}"></i> 
-                </li>`;
-            lista.insertAdjacentHTML("beforeend", elementoHTML);
+            li.innerHTML = `
+                <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${item.id}"></i>
+                <p class="text ${LINE_CLASS}">${item.nombre}</p>
+                <i class="fas fa-copy" data-action="copiar" id="${item.id}"></i> 
+                <i class="fas fa-trash" data-action="eliminar" id="${item.id}"></i>`;
+            lista.appendChild(li);
         }
     });
+    // Actualizamos la UI después de cargar
     actualizarVisibilidadBotonLimpiar(); 
     checkListEmptyState();
 }
 
+// Aplicar el tema guardado al cargar la página
 const savedTheme = localStorage.getItem('theme') || 'light';
 if (savedTheme === 'dark') {
     document.body.classList.add('dark-mode');
     themeToggleButton.querySelector('i').className = 'fas fa-sun';
 }
 
+// Cargar la lista de tareas
 let data = localStorage.getItem('TODO');
-try {
-    LIST = data ? JSON.parse(data) : [];
-    if (!Array.isArray(LIST)) LIST = [];
-} catch (e) {
+if (data) {
+    try {
+        LIST = JSON.parse(data);
+        if (!Array.isArray(LIST)) { LIST = []; }
+    } catch (e) {
+        console.error("Error al parsear datos de localStorage, iniciando lista vacía.", e);
+        LIST = [];
+    }
+    LIST = LIST.filter(item => item && !item.eliminado);
+    const maxId = Math.max(...LIST.map(item => item.id), -1);
+    id = maxId + 1;
+    cargarListaDesdeStorage(LIST);
+    console.log("Lista cargada desde localStorage:", LIST);
+} else {
     LIST = [];
+    id = 0;
+    checkListEmptyState(); // Comprobar estado inicial
+    console.log("No hay datos en localStorage. Iniciando lista vacía.");
 }
-LIST = LIST.filter(item => item && !item.eliminado);
-id = Math.max(...LIST.map(item => item.id), -1) + 1;
-cargarListaDesdeStorage(LIST);
 
 // --- RESTO DEL CÓDIGO (RECONOCIMIENTO DE VOZ, EDICIÓN, DRAG & DROP) ---
+// (Sin cambios, pero he eliminado la confirmación de voz para que sea consistente con el clic)
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
