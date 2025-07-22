@@ -159,26 +159,44 @@ function undoDelete() {
     }
 }
 
-// NUEVO: Función para exportar la lista de tareas
+// ================== INICIO DEL CAMBIO: FUNCIÓN EXPORTAR CORREGIDA ==================
+// Función para exportar la lista de tareas
 function exportarTareas() {
     if (LIST.length === 0) {
         showNotification("No hay tareas para exportar.");
         return;
     }
-    const dataStr = JSON.stringify(LIST, null, 2);
-    const dataBlob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `tareas-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showNotification("Lista de tareas exportada con éxito.");
-}
+    
+    try {
+        const dataStr = JSON.stringify(LIST, null, 2);
+        const dataBlob = new Blob([dataStr], { type: "application/json" });
+        const url = URL.createObjectURL(dataBlob);
 
-// NUEVO: Función para manejar la importación de tareas
+        const link = document.createElement('a');
+        link.style.display = 'none'; // No es necesario que sea visible
+        link.href = url;
+        link.download = `tareas-backup-${new Date().toISOString().slice(0, 10)}.json`;
+        
+        document.body.appendChild(link);
+        link.click();
+
+        // Usamos un temporizador para dar tiempo al navegador a procesar el clic
+        // antes de eliminar el enlace y el objeto URL. ¡Esta es la clave!
+        setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }, 100);
+
+        showNotification("Lista de tareas exportada con éxito.");
+
+    } catch (error) {
+        console.error("Error al exportar:", error);
+        showNotification("Error al intentar exportar la lista.");
+    }
+}
+// =================== FIN DEL CAMBIO ====================
+
+// Función para manejar la importación de tareas
 function importarTareas(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -256,8 +274,7 @@ lista.addEventListener('click', (event) => {
 
 // --- LÓGICA DE CARGA INICIAL DE DATOS ---
 function cargarListaDesdeStorage(arrayItems) {
-    // Para evitar que se aplique la animación de entrada a todas las tareas al cargar
-    lista.innerHTML = ''; // Limpiamos la lista primero
+    lista.innerHTML = '';
     arrayItems.forEach(item => {
         if (item && !item.eliminado) { 
             const REALIZADO_CLASS = item.realizado ? check : uncheck;
