@@ -2,11 +2,14 @@ const lista = document.querySelector('#lista');
 const input = document.querySelector('#input');
 const botonEnter = document.querySelector('#boton-enter');
 const botonGrabarVoz = document.getElementById('boton-grabar-voz');
-
-// ================== INICIO DEL CAMBIO ==================
-// NUEVO: Seleccionamos los nuevos botones
 const botonLimpiarCompletadas = document.getElementById('boton-limpiar-completadas');
 const themeToggleButton = document.getElementById('theme-toggle-button');
+
+// ================== INICIO DEL CAMBIO: NUEVOS ELEMENTOS ==================
+const notificationContainer = document.getElementById('notification-container');
+const notificationMessage = document.getElementById('notification-message');
+const undoButton = document.getElementById('undo-button');
+const mensajeListaVacia = document.getElementById('mensaje-lista-vacia');
 // =================== FIN DEL CAMBIO ====================
 
 // --- CONSTANTES PARA ESTILOS ---
@@ -14,12 +17,16 @@ const check = 'fa-check-circle';
 const uncheck = 'fa-circle';
 const lineThrough = 'line-through';
 
-// --- VARIABLES GLOBALES PARA EL ESTADO DE LA LISTA ---
+// --- VARIABLES GLOBALES ---
 let LIST; 
 let id;   
+// ================== INICIO DEL CAMBIO: VARIABLES PARA NUEVAS FUNCIONES ==================
+let notificationTimer = null; // Para controlar el temporizador de la notificación
+let lastDeleted = null;       // Para guardar la última tarea eliminada (para el Deshacer)
+// =================== FIN DEL CAMBIO ====================
+
 
 // --- FUNCIÓN PARA CONVERTIR PALABRAS DE NÚMEROS A DÍGITOS ---
-// (Sin cambios en esta función)
 function palabraANumero(palabraNumero) {
     const palabra = palabraNumero.toLowerCase().trim();
     const palabraLimpia = palabra.replace(/[.,!?]$/, '');
@@ -34,7 +41,7 @@ function palabraANumero(palabraNumero) {
     return null;
 }
 
-// --- FUNCIÓN PARA AÑADIR UN PRODUCTO A LA LISTA (DOM y Array) ---
+// --- FUNCIÓN PARA AÑADIR UN PRODUCTO A LA LISTA ---
 function procesarYAnadirTarea(nombreTarea) {
     const tareaLimpia = nombreTarea.trim();
     if (tareaLimpia) {
@@ -47,7 +54,8 @@ function procesarYAnadirTarea(nombreTarea) {
         });
         localStorage.setItem('TODO', JSON.stringify(LIST));
         id++;
-        actualizarVisibilidadBotonLimpiar(); // Actualizar visibilidad del botón
+        actualizarVisibilidadBotonLimpiar(); 
+        checkListEmptyState(); // Actualizar estado de lista vacía
         console.log("Producto añadido:", tareaLimpia, "ID actual para próximo:", id);
         return true;
     }
@@ -61,6 +69,8 @@ function agregarTareaAlDOM(tarea, idItem, realizado, eliminado) {
     const REALIZADO_CLASS = realizado ? check : uncheck;
     const LINE_CLASS = realizado ? lineThrough : '';
     
+    // No usamos la animación al cargar la página, solo para nuevas tareas.
+    // La animación se aplica directamente por CSS a todos los 'li' nuevos.
     const elementoHTML = `
         <li id="elemento-${idItem}">
             <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${idItem}"></i>
@@ -84,24 +94,34 @@ function tareaRealizada(element) {
         tareaEnLista.realizado = !tareaEnLista.realizado;
     }
     localStorage.setItem('TODO', JSON.stringify(LIST));
-    actualizarVisibilidadBotonLimpiar(); // Actualizar visibilidad del botón
+    actualizarVisibilidadBotonLimpiar(); 
 }
 
 // --- FUNCIÓN DE TAREA ELIMINADA ---
 function tareaEliminada(element) {
     const liPadre = element.closest('li');
-    liPadre?.remove();
-
     const itemId = parseInt(element.id);
-    // Marcamos como eliminado para no romper la lógica de reordenar.
-    // Al recargar, se filtran. Una solución más robusta sería filtrar aquí mismo.
+
+    // Guardamos la tarea y su posición por si se quiere deshacer
     const tareaIndex = LIST.findIndex(item => item.id === itemId);
     if (tareaIndex > -1) {
+        lastDeleted = { item: LIST[tareaIndex], index: tareaIndex };
+        
+        // La eliminamos del array y guardamos
         LIST.splice(tareaIndex, 1);
+        localStorage.setItem('TODO', JSON.stringify(LIST));
+
+        // Animación de salida
+        liPadre.classList.add('removing');
+        // Esperamos que termine la animación para quitar el elemento del DOM
+        liPadre.addEventListener('transitionend', () => {
+            liPadre?.remove();
+        });
+
+        actualizarVisibilidadBotonLimpiar();
+        checkListEmptyState(); // Comprobar si la lista quedó vacía
+        showNotification('Tarea eliminada', true); // Mostrar notificación con botón Deshacer
     }
-    localStorage.setItem('TODO', JSON.stringify(LIST));
-    actualizarVisibilidadBotonLimpiar(); // Actualizar visibilidad del botón
-    console.log("Producto eliminado. Lista actualizada:", LIST);
 }
 
 // --- FUNCIÓN PARA COPIAR TAREA AL PORTAPAPELES ---
@@ -112,6 +132,7 @@ function copiarTareaAlPortapapeles(element) {
     if (textoParaCopiar) {
         navigator.clipboard.writeText(textoParaCopiar)
             .then(() => {
+                showNotification('¡Tarea copiada al portapapeles!');
                 console.log(`Texto copiado: "${textoParaCopiar}"`);
             })
             .catch(err => {
@@ -121,74 +142,98 @@ function copiarTareaAlPortapapeles(element) {
     }
 }
 
-// ================== INICIO DEL CAMBIO: NUEVAS FUNCIONES ==================
-// NUEVO: Muestra u oculta el botón de "Limpiar Completadas"
+// ================== INICIO DEL CAMBIO: NUEVAS FUNCIONES DE UI ==================
+// Muestra u oculta el botón de "Limpiar Completadas"
 function actualizarVisibilidadBotonLimpiar() {
     const hayCompletadas = LIST.some(item => item.realizado);
-    if (hayCompletadas) {
-        botonLimpiarCompletadas.classList.remove('hidden');
-    } else {
-        botonLimpiarCompletadas.classList.add('hidden');
-    }
+    botonLimpiarCompletadas.classList.toggle('hidden', !hayCompletadas);
 }
 
-// NUEVO: Lógica para limpiar todas las tareas completadas
+// Comprueba si la lista está vacía y muestra un mensaje
+function checkListEmptyState() {
+    mensajeListaVacia.classList.toggle('hidden', LIST.length > 0);
+}
+
+// Lógica para limpiar todas las tareas completadas
 function limpiarTareasCompletadas() {
     if (window.confirm("¿Estás seguro de que quieres eliminar TODAS las tareas completadas?")) {
-        // Filtrar la lista para mantener solo las no completadas
         LIST = LIST.filter(item => !item.realizado);
-        // Guardar la nueva lista en localStorage
         localStorage.setItem('TODO', JSON.stringify(LIST));
-        // Limpiar el DOM
+        
+        // Re-renderizamos toda la lista
         lista.innerHTML = '';
-        // Volver a cargar la lista en el DOM desde el array actualizado
         cargarListaDesdeStorage(LIST);
+        showNotification('Tareas completadas eliminadas');
         console.log("Tareas completadas eliminadas.");
     }
 }
-// =================== FIN DEL CAMBIO: NUEVAS FUNCIONES ====================
 
+// Muestra una notificación (toast)
+function showNotification(message, showUndo = false) {
+    clearTimeout(notificationTimer); // Cancela el timer anterior si existe
+    
+    notificationMessage.textContent = message;
+    notificationContainer.classList.add('show');
+    
+    undoButton.classList.toggle('hidden', !showUndo);
+
+    // La notificación se oculta después de 5 segundos
+    notificationTimer = setTimeout(() => {
+        notificationContainer.classList.remove('show');
+        lastDeleted = null; // Si el tiempo pasa, ya no se puede deshacer
+    }, 5000);
+}
+
+// Función para deshacer la eliminación
+function undoDelete() {
+    if (lastDeleted) {
+        // Reinsertamos el elemento en su posición original en el array
+        LIST.splice(lastDeleted.index, 0, lastDeleted.item);
+        localStorage.setItem('TODO', JSON.stringify(LIST));
+
+        // Limpiamos y volvemos a renderizar toda la lista para mantener el orden
+        lista.innerHTML = '';
+        cargarListaDesdeStorage(LIST);
+        
+        lastDeleted = null; // Limpiamos la variable
+        notificationContainer.classList.remove('show'); // Ocultamos la notificación
+    }
+}
+// =================== FIN DEL CAMBIO ====================
 
 // --- EVENT LISTENERS ---
 botonEnter.addEventListener('click', () => {
-    const tareaTexto = input.value;
-    if (procesarYAnadirTarea(tareaTexto)) {
+    if (procesarYAnadirTarea(input.value)) {
         input.value = '';
-        input.blur(); // AÑADIDO: Cierra el teclado virtual al hacer clic
+        input.blur();
     }
 });
 
 input.addEventListener('keyup', function (event) {
     if (event.key === 'Enter') {
-        const tareaTexto = input.value;
-        if (procesarYAnadirTarea(tareaTexto)) {
+        if (procesarYAnadirTarea(input.value)) {
             input.value = '';
-            input.blur(); // AÑADIDO: Cierra el teclado virtual al presionar Enter
+            input.blur(); 
         }
     }
 });
 
-// ================== INICIO DEL CAMBIO: NUEVOS LISTENERS ==================
-// NUEVO: Listener para el botón de limpiar
 botonLimpiarCompletadas.addEventListener('click', limpiarTareasCompletadas);
+undoButton.addEventListener('click', undoDelete); // Listener para el botón Deshacer
 
-// NUEVO: Listener para el botón de tema
 themeToggleButton.addEventListener('click', () => {
     document.body.classList.toggle('dark-mode');
     
-    // Guardar la preferencia en localStorage
-    let theme = 'light';
     const icon = themeToggleButton.querySelector('i');
-    
+    let theme = 'light';
     if (document.body.classList.contains('dark-mode')) {
         theme = 'dark';
-        icon.className = 'fas fa-sun'; // Cambiar a icono de sol
+        icon.className = 'fas fa-sun';
     } else {
-        icon.className = 'fas fa-moon'; // Cambiar a icono de luna
+        icon.className = 'fas fa-moon';
     }
     localStorage.setItem('theme', theme);
 });
-// =================== FIN DEL CAMBIO: NUEVOS LISTENERS ====================
 
 lista.addEventListener('click', function (event) {
     const element = event.target;
@@ -200,27 +245,36 @@ lista.addEventListener('click', function (event) {
         if (action === 'toggleRealizado') {
             tareaRealizada(element);
         } else if (action === 'eliminar') {
-            if (window.confirm("¿Estás seguro de que quieres eliminar esta tarea?")) {
-                tareaEliminada(element);
-            }
+            // Ya no mostramos el confirm aquí, la opción de deshacer es suficiente
+            tareaEliminada(element);
         } else if (action === 'copiar') {
             copiarTareaAlPortapapeles(element);
         }
     }
 });
 
-
 // --- LÓGICA DE CARGA INICIAL DE DATOS ---
 function cargarListaDesdeStorage(arrayItems) {
     arrayItems.forEach(function (item) {
         if (item && !item.eliminado) { 
-            agregarTareaAlDOM(item.nombre, item.id, item.realizado, false);
+            // Añadimos las tareas sin animación al cargar la página
+            const li = document.createElement('li');
+            li.id = `elemento-${item.id}`;
+            const REALIZADO_CLASS = item.realizado ? check : uncheck;
+            const LINE_CLASS = item.realizado ? lineThrough : '';
+            li.innerHTML = `
+                <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${item.id}"></i>
+                <p class="text ${LINE_CLASS}">${item.nombre}</p>
+                <i class="fas fa-copy" data-action="copiar" id="${item.id}"></i> 
+                <i class="fas fa-trash" data-action="eliminar" id="${item.id}"></i>`;
+            lista.appendChild(li);
         }
     });
-    actualizarVisibilidadBotonLimpiar(); // Asegurarse de que el botón se muestra/oculta al cargar
+    // Actualizamos la UI después de cargar
+    actualizarVisibilidadBotonLimpiar(); 
+    checkListEmptyState();
 }
 
-// ================== INICIO DEL CAMBIO: CARGA INICIAL ==================
 // Aplicar el tema guardado al cargar la página
 const savedTheme = localStorage.getItem('theme') || 'light';
 if (savedTheme === 'dark') {
@@ -228,9 +282,9 @@ if (savedTheme === 'dark') {
     themeToggleButton.querySelector('i').className = 'fas fa-sun';
 }
 
+// Cargar la lista de tareas
 let data = localStorage.getItem('TODO');
 if (data) {
-    // ... (la lógica de carga de tareas no cambia, solo se añade la llamada a actualizarVisibilidadBotonLimpiar)
     try {
         LIST = JSON.parse(data);
         if (!Array.isArray(LIST)) { LIST = []; }
@@ -238,23 +292,20 @@ if (data) {
         console.error("Error al parsear datos de localStorage, iniciando lista vacía.", e);
         LIST = [];
     }
-
     LIST = LIST.filter(item => item && !item.eliminado);
     const maxId = Math.max(...LIST.map(item => item.id), -1);
     id = maxId + 1;
-
-    cargarListaDesdeStorage(LIST); // Esta función ahora también actualiza el botón
+    cargarListaDesdeStorage(LIST);
     console.log("Lista cargada desde localStorage:", LIST);
 } else {
     LIST = [];
     id = 0;
-    actualizarVisibilidadBotonLimpiar(); // También aquí por si acaso
+    checkListEmptyState(); // Comprobar estado inicial
     console.log("No hay datos en localStorage. Iniciando lista vacía.");
 }
-// =================== FIN DEL CAMBIO: CARGA INICIAL ====================
 
 // --- RESTO DEL CÓDIGO (RECONOCIMIENTO DE VOZ, EDICIÓN, DRAG & DROP) ---
-// (No se han realizado cambios en estas secciones, siguen funcionando igual)
+// (Sin cambios, pero he eliminado la confirmación de voz para que sea consistente con el clic)
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();

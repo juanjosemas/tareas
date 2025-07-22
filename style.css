@@ -11,8 +11,8 @@
     --input-placeholder-color: gray;
     --icon-primary-color: indigo;
     --icon-voice-hover: #5c007a;
-    --task-bg-gradient-start: #2a73c2; /* var(--blue-dark) */
-    --task-bg-gradient-end: #2c7b90; /* var(--green) */
+    --task-bg-gradient-start: #2a73c2;
+    --task-bg-gradient-end: #2c7b90;
     --task-text-color: white;
     --task-completed-icon-color: lightgreen;
     --task-icon-hover-color1: lightcoral;
@@ -22,6 +22,11 @@
     --button-action-text: #333;
     --button-action-hover-bg: #cccccc;
     --theme-toggle-color: #444;
+    --notification-bg: #333;
+    --notification-text: white;
+    --undo-button-bg: #ffc107;
+    --undo-button-text: black;
+    --empty-list-text: #555;
 }
 
 body.dark-mode {
@@ -47,6 +52,11 @@ body.dark-mode {
     --button-action-text: #e0e0e0;
     --button-action-hover-bg: #4a4a5a;
     --theme-toggle-color: #ffc107;
+    --notification-bg: #e0e0e0;
+    --notification-text: black;
+    --undo-button-bg: #673ab7;
+    --undo-button-text: white;
+    --empty-list-text: #aaa;
 }
 /* =================== FIN DEL CAMBIO: VARIABLES DE TEMA ==================== */
 
@@ -83,7 +93,6 @@ body {
     position: relative; /* Para posicionar el botón de tema */
 }
 
-/* NUEVO: Estilos para el botón de tema */
 #theme-toggle-button {
     position: absolute;
     top: 5px;
@@ -177,12 +186,10 @@ h1 {
     color: var(--icon-voice-hover);
 }
 
-/* ... Estilos de botón de voz y animaciones (sin cambios de color) ... */
 .agregar-tarea button#boton-grabar-voz:disabled { color: #999; cursor: default; transform: scale(1); }
 .agregar-tarea button#boton-grabar-voz.escuchando i { color: red; animation: pulseMic 1.2s infinite ease-in-out; }
 @keyframes pulseMic { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-/* NUEVO: Estilos para el contenedor de acciones y el botón de limpiar */
 .acciones-lista {
     display: flex;
     justify-content: flex-end;
@@ -204,13 +211,12 @@ h1 {
     background-color: var(--button-action-hover-bg);
 }
 
-/* NUEVO: Clase de utilidad para ocultar elementos */
 .hidden {
     display: none !important;
 }
 
 .seccion-tarea {
-    margin-top: -15px; /* Ajustado para el nuevo botón */
+    margin-top: -15px;
     flex-grow: 1; 
     overflow-y: auto; 
     min-height: 100px; 
@@ -218,6 +224,18 @@ h1 {
 }
 
 .seccion-tarea ul#lista { list-style: none; padding-left: 0; }
+
+/* ================== INICIO DEL CAMBIO: Animaciones y Estilos de Lista ================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .seccion-tarea li {
     display: flex;
@@ -229,12 +247,28 @@ h1 {
     margin: 10px 5px; 
     box-shadow: 2px 4px 4px 4px var(--add-task-shadow);
     font-family: 'Piedra', cursive;
-    transition: transform 0.2s ease-out, opacity 0.2s ease-out; 
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Transición para la eliminación */
     position: relative; 
     overflow: hidden; 
     flex-shrink: 0; 
     cursor: grab;
+    animation: fadeIn 0.4s ease-out; /* Animación para añadir */
 }
+
+/* Clase para animar la eliminación */
+.seccion-tarea li.removing {
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+#mensaje-lista-vacia {
+    text-align: center;
+    padding: 20px;
+    color: var(--empty-list-text);
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+}
+/* =================== FIN DEL CAMBIO ==================== */
 
 .seccion-tarea li i { font-size: 17px; cursor: pointer; transition: color 0.2s; flex-shrink: 0; padding: 5px; }
 .seccion-tarea li i[data-action="toggleRealizado"] { margin-right: 5px; }
@@ -258,3 +292,44 @@ h1 {
 #lista li.dragging-task { opacity: 1; background: var(--task-bg-gradient-end); box-shadow: 0 6px 12px rgba(0,0,0,0.3); cursor: grabbing; }
 .placeholder-task { background-color: rgba(42, 115, 194, 0.2); border: 2px dashed var(--task-bg-gradient-start); border-radius: 12px; margin: 10px 5px; box-sizing: border-box; list-style-type: none !important; }
 #lista li.dragging-task { touch-action: none; }
+
+
+/* ================== INICIO DEL CAMBIO: Estilos de Notificación ================== */
+#notification-container {
+    position: fixed;
+    bottom: -100px; /* Inicialmente oculta */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--notification-bg);
+    color: var(--notification-text);
+    padding: 12px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: bottom 0.5s ease-in-out;
+    z-index: 1000;
+}
+
+#notification-container.show {
+    bottom: 20px; /* La hacemos visible */
+}
+
+#undo-button {
+    background-color: var(--undo-button-bg);
+    color: var(--undo-button-text);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+#undo-button:hover {
+    opacity: 0.9;
+}
+/* =================== FIN DEL CAMBIO ==================== */
