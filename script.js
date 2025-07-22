@@ -154,6 +154,7 @@ botonEnter.addEventListener('click', () => {
     const tareaTexto = input.value;
     if (procesarYAnadirTarea(tareaTexto)) {
         input.value = '';
+        input.blur(); // AÑADIDO: Cierra el teclado virtual al hacer clic
     }
 });
 
@@ -162,6 +163,7 @@ input.addEventListener('keyup', function (event) {
         const tareaTexto = input.value;
         if (procesarYAnadirTarea(tareaTexto)) {
             input.value = '';
+            input.blur(); // AÑADIDO: Cierra el teclado virtual al presionar Enter
         }
     }
 });
