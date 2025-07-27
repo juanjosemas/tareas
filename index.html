@@ -52,7 +52,18 @@
             </button>
         </div> 
 
-        <br>
+        <!-- Sección para la búsqueda y los filtros -->
+        <div class="search-filter-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="search" id="search-input" placeholder="Buscar tarea...">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="pending">Pendientes</button>
+                <button class="filter-btn" data-filter="completed">Completadas</button>
+            </div>
+        </div>
         
         <div class="seccion-tarea">
             <ul id="lista"></ul>
@@ -92,7 +103,6 @@
                 <div style="width: 80px;"></div> 
             </div>
             <div class="config-options">
-                
                 <div class="setting-item">
                     <span>Modo Oscuro</span>
                     <label class="toggle-switch">
@@ -100,13 +110,10 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-
-                <!-- COMENTARIO: Selector de color con los nuevos temas actualizados -->
                 <div class="setting-item">
                     <span>Color de Tareas</span>
                     <div id="task-color-selector" class="color-selector">
                         <label>
-                            <!-- El valor ahora es "blue" para el azul fuerte -->
                             <input type="radio" name="task-color" value="blue" checked>
                             <span class="color-dot blue"></span>
                         </label>
@@ -119,13 +126,11 @@
                             <span class="color-dot yellow"></span>
                         </label>
                         <label>
-                            <!-- El valor ahora es "lightgreen" para el nuevo verde claro -->
                             <input type="radio" name="task-color" value="lightgreen">
                             <span class="color-dot lightgreen"></span>
                         </label>
                     </div>
                 </div>
-
                  <div class="setting-item">
                     <span>Tamaño del Texto</span>
                     <div class="font-size-control">
@@ -134,7 +139,13 @@
                         <span>A</span>
                     </div>
                 </div>
-
+                <div class="setting-item">
+                    <span>Efectos de Sonido</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sounds-toggle-switch">
+                        <span class="slider"></span>
+                    </label>
+                </div>
                 <div class="setting-item">
                     <span>Animaciones</span>
                     <label class="toggle-switch">
@@ -142,7 +153,6 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-
                 <div class="setting-item">
                     <span>Pedir confirmación al borrar</span>
                     <label class="toggle-switch">
@@ -150,7 +160,6 @@
                         <span class="slider"></span>
                     </label>
                 </div>
-
             </div>
         </div>
     </div>
@@ -162,6 +171,12 @@
       <span id="notification-message"></span>
       <button id="undo-button" class="hidden">Deshacer</button>
   </div>
+
+  <!-- Elementos de audio para los efectos de sonido -->
+  <audio id="sound-add" src="sounds/add.mp3" preload="auto"></audio>
+  <audio id="sound-complete" src="sounds/complete.mp3" preload="auto"></audio>
+  <audio id="sound-delete" src="sounds/delete.mp3" preload="auto"></audio>
+  <audio id="sound-empty" src="sounds/empty.mp3" preload="auto"></audio>
 
 <script src="script.js"></script>
 </body>

@@ -1,4 +1,4 @@
-/* ================== INICIO DEL CAMBIO: NUEVOS COLORES ================== */
+/* ================== INICIO: VARIABLES DE TEMA Y COLORES ================== */
 :root {
     /* Tema Claro (por defecto) */
     --body-bg-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/nubes.jpg');
@@ -29,15 +29,18 @@
     --toggle-slider-bg: #ccc;
     --toggle-slider-checked-bg: #673ab7;
     --task-font-size: 1.1rem;
+    --progress-bar-bg: rgba(255,255,255,0.3);
+    --progress-bar-fill: #fca311;
+    --subtask-bg: rgba(0,0,0,0.1);
 
-    /* COMENTARIO: Variables para los NUEVOS temas de tareas, actualizados según tu petición. */
-    --task-bg-gradient-start-blue: #0077b6; /* Azul más fuerte */
+    /* Temas de tareas */
+    --task-bg-gradient-start-blue: #0077b6;
     --task-bg-gradient-end-blue: #023e8a;
-    --task-bg-gradient-start-red: #ff758f; /* Se mantiene el rojo coral */
+    --task-bg-gradient-start-red: #ff758f;
     --task-bg-gradient-end-red: #ffb3c1;
-    --task-bg-gradient-start-yellow: #ffd670; /* Se mantiene el amarillo solar */
+    --task-bg-gradient-start-yellow: #ffd670;
     --task-bg-gradient-end-yellow: #ffb703;
-    --task-bg-gradient-start-lightgreen: #90ee90; /* Nuevo verde clarito */
+    --task-bg-gradient-start-lightgreen: #90ee90;
     --task-bg-gradient-end-lightgreen: #76c893;
 }
 
@@ -70,9 +73,11 @@ body.dark-mode {
     --config-text-color: #e0e0e0;
     --toggle-slider-bg: #5a5a6a;
     --toggle-slider-checked-bg: #ffc107;
+    --progress-bar-bg: rgba(0,0,0,0.3);
+    --subtask-bg: rgba(255,255,255,0.05);
 }
 
-/* COMENTARIO: Clases que aplican los nuevos temas de tareas al body */
+/* Clases que aplican los temas de tareas al body */
 body.task-theme-blue {
     --task-bg-gradient-start: var(--task-bg-gradient-start-blue);
     --task-bg-gradient-end: var(--task-bg-gradient-end-blue);
@@ -88,9 +93,9 @@ body.task-theme-yellow {
 body.task-theme-lightgreen {
     --task-bg-gradient-start: var(--task-bg-gradient-start-lightgreen);
     --task-bg-gradient-end: var(--task-bg-gradient-end-lightgreen);
-    --task-text-color: #004b23; /* Un verde oscuro para el texto, para que sea legible */
+    --task-text-color: #004b23;
 }
-/* =================== FIN DEL CAMBIO ==================== */
+/* =================== FIN: VARIABLES DE TEMA Y COLORES =================== */
 
 
 /* Estilos globales */
@@ -147,9 +152,9 @@ h1 {
     flex-grow: 1;
     text-align: center;
     flex-shrink: 0; 
-    margin-top: 2px;
-    margin-bottom: 10px;
+    margin-top: -2px;
     margin-left: -20px;
+    margin-bottom: -5px;
     color: var(--header-color);
     font-style: italic;
     font-size: 30px;
@@ -169,6 +174,7 @@ h1 {
     width: 35px;
     height: 35px;
     border-radius: 50%; 
+    margin-top: 8px;
     margin-right: 10px;
     margin-left: 20px;
     background-color: var(--header-color);     
@@ -190,7 +196,7 @@ h1 {
     display: flex;
     align-items: center;
     padding: 10px;
-    margin: -20px 0 10px 0; 
+    margin: 0 0 10px 0; 
     box-shadow: 2px 4px 4px 4px var(--add-task-shadow);
     flex-shrink: 0; 
 }
@@ -245,25 +251,59 @@ h1 {
     flex-shrink: 0;
 }
 
-.agregar-tarea button#boton-grabar-voz:hover {
-    transform: scale(1.1);
-    color: var(--icon-voice-hover);
+/* ================== INICIO: Ajustes de tamaño de Búsqueda y Filtros ================== */
+.search-filter-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Reducido de 10px */
+    margin: -5px 5px 5px 5px;
 }
-
-.agregar-tarea button#boton-grabar-voz:disabled{ 
-    color: #999; 
-    cursor: default; 
-    transform: scale(1); 
+.search-box {
+    display: flex;
+    align-items: center;
+    background-color: var(--add-task-bg);
+    border-radius: 8px;
+    padding: 0 8px; /* Reducido padding horizontal */
+    box-shadow: 1px 2px 2px 1px var(--add-task-shadow);
 }
-
-.agregar-tarea button#boton-grabar-voz.escuchando i { 
-    color: red; 
-    animation: pulseMic 1.2s infinite ease-in-out; 
+.search-box i {
+    color: var(--input-placeholder-color);
+    font-size: 0.9rem; /* Reducido tamaño del icono */
 }
-
-@keyframes pulseMic { 
-    0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } 
+#search-input {
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 6px 5px; /* Reducido padding vertical para hacerlo más bajo */
+    color: var(--header-color);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 0.9rem; /* Reducido tamaño de la fuente */
 }
+#search-input:focus {
+    outline: none;
+}
+.filter-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 8px;
+}
+.filter-btn {
+    flex-grow: 1;
+    padding: 4px; /* Reducido padding para hacer los botones más bajos */
+    border-radius: 8px;
+    border: 1px solid var(--container-color);
+    background-color: var(--add-task-bg);
+    color: var(--header-color);
+    cursor: pointer;
+    font-family: 'Piedra', cursive;
+    font-size: 0.8rem; /* Reducido tamaño de la fuente */
+    transition: background-color 0.2s, color 0.2s;
+}
+.filter-btn.active {
+    background-color: var(--container-color);
+    color: white;
+}
+/* =================== FIN: Ajustes de tamaño de Búsqueda y Filtros =================== */
 
 
 /* Clase de utilidad para ocultar elementos */
@@ -273,7 +313,7 @@ h1 {
 
 /* Estilos de la lista de tareas */
 .seccion-tarea {
-    margin-top: -15px;
+    margin-top: 0;
     flex-grow: 1; 
     overflow-y: auto; 
     min-height: 100px; 
@@ -290,30 +330,117 @@ h1 {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.seccion-tarea li, .seccion-papelera li {
-    display: flex;
-    align-items: center;
+.task-item {
     background: linear-gradient(to bottom, var(--task-bg-gradient-start), var(--task-bg-gradient-end));
     border-radius: 12px;
-    padding: 3px 10px;
-    color: white; 
     margin: 10px 5px; 
     box-shadow: 2px 4px 4px 4px var(--add-task-shadow);
     font-family: 'Piedra', cursive;
     transition: transform 0.3s ease-out, opacity 0.3s ease-out, background-color 0.3s ease;
-    position: relative; 
-    overflow: hidden; 
-    flex-shrink: 0; 
     animation: fadeIn 0.4s ease-out;
+    overflow: hidden;
 }
 
-.seccion-tarea li {
+.task-item.removing {
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    padding: 3px 10px;
+    color: white; 
+    position: relative; 
     cursor: grab;
 }
 
-.seccion-tarea li.removing, .seccion-papelera li.removing {
-    transform: scale(0.9);
-    opacity: 0;
+.task-content p.text { 
+    font-size: var(--task-font-size); 
+    color: var(--task-text-color);             
+    font-style: italic; 
+    flex-grow: 1; 
+    margin: 0 5px; 
+    word-break: break-word; 
+    user-select: none; 
+    min-width: 0; 
+    text-align: left; 
+}
+
+.task-content i {
+    font-size: 17px; cursor: pointer; 
+    transition: color 0.2s; 
+    flex-shrink: 0; 
+    padding: 5px; 
+}
+
+.task-icons {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.progress-bar-container {
+    height: 6px;
+    background-color: var(--progress-bar-bg);
+    border-radius: 3px;
+    margin: 2px 10px 4px 10px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--progress-bar-fill);
+    border-radius: 3px;
+    transition: width 0.3s ease-in-out;
+}
+
+.subtask-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+}
+.subtask-container.show {
+    max-height: 500px;
+}
+.subtask-list {
+    list-style: none;
+    padding: 0 10px 5px 30px;
+}
+.subtask-item {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    background-color: var(--subtask-bg);
+    border-radius: 6px;
+    margin-top: 5px;
+    font-family: 'Open Sans', sans-serif;
+    color: var(--task-text-color);
+}
+.subtask-item p.text {
+    font-size: calc(var(--task-font-size) * 0.9);
+    flex-grow: 1;
+    margin: 0 8px;
+}
+.subtask-item i {
+    font-size: 15px;
+    padding: 4px;
+    cursor: pointer;
+}
+.add-subtask-wrapper {
+    padding: 0 10px 10px 30px;
+}
+.add-subtask-input {
+    width: 100%;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: var(--task-text-color);
+    font-family: 'Open Sans', sans-serif;
+}
+.add-subtask-input::placeholder {
+    color: rgba(255,255,255,0.7);
 }
 
 #mensaje-lista-vacia, #mensaje-papelera-vacia {
@@ -322,51 +449,6 @@ h1 {
     color: var(--empty-list-text);
     font-family: 'Caveat', cursive;
     font-size: 1.5rem;
-}
-
-.seccion-tarea li i, .seccion-papelera li i { 
-    font-size: 17px; cursor: pointer; 
-    transition: color 0.2s; 
-    flex-shrink: 0; 
-    padding: 5px; 
-}
-.seccion-tarea li i[data-action="toggleRealizado"] { 
-    margin-right: 5px; 
-}
-
-.seccion-tarea li p.text, .seccion-papelera li p.text { 
-    font-size: var(--task-font-size); 
-    color: var(--task-text-color);             
-    font-style: italic; 
-    flex-grow: 1; 
-    margin: 0 5px; 
-    word-break: break-word; 
-    user-select: none; 
-    -webkit-user-select: none;      
-    -moz-user-select: none;         
-    -ms-user-select: none; 
-    min-width: 0; 
-    text-align: left; 
-}
-
-.seccion-tarea li i[data-action="copiar"] { 
-    margin-left: auto; 
-}
-
-.seccion-tarea li i[data-action="eliminar"] { 
-    margin-left: 8px; 
-}
-
-.seccion-tarea i.fa-circle:hover, .seccion-tarea i.fa-check-circle:hover { 
-    color: var(--task-icon-hover-color1); 
-}
-
-.seccion-tarea i.fa-trash:hover { 
-    color: var(--task-icon-hover-color2); 
-}
-
-.seccion-tarea i.fa-copy:hover { 
-    color: var(--task-copy-icon-hover-color); 
 }
 
 .line-through{ 
@@ -407,8 +489,7 @@ h1 {
     min-width: 0; 
 }
 
-/* Estilos para arrastrar y soltar (Drag and Drop) */
-#lista li.dragging-task { 
+#lista .task-item.dragging-task .task-content { 
     opacity: 1; 
     background: var(--task-bg-gradient-end);     
     box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
@@ -424,11 +505,10 @@ h1 {
     list-style-type: none !important; 
 }
 
-#lista li.dragging-task { 
+#lista .task-item.dragging-task { 
     touch-action: none; 
 }
 
-/* Estilos para la Notificación */
 #notification-container {
     position: fixed;
     bottom: 20px;
@@ -472,7 +552,6 @@ h1 {
     opacity: 0.9;
 }
 
-/* Estilos para el Menú Lateral */
 #overlay {
     position: fixed;
     top: 0;
@@ -551,7 +630,6 @@ h1 {
     text-align: center;
 }
 
-/* Estilos para las vistas de Papelera y Configuración */
 .seccion-papelera, .seccion-configuracion {
     width: 100%;
     flex-grow: 1;
@@ -579,7 +657,6 @@ h1 {
 .papelera-header button, .config-header button {
     background: transparent;
     border: none;
-    color: var(--header-color);
     font-size: 1.0rem;
     cursor: pointer;
     font-family: 'Open Sans', sans-serif;
@@ -589,9 +666,8 @@ h1 {
     opacity: 0.8;
 }
 
-/* ================== INICIO DEL CAMBIO: Estilos para el botón Volver ================== */
 .boton-volver-lista {
-    background-color: #007bff !important; /* Usamos !important para asegurar que sobreescriba otras reglas */
+    background-color: #007bff !important;
     color: white !important;
     padding: 5px 10px;
     border-radius: 5px;
@@ -600,25 +676,21 @@ h1 {
 .boton-volver-lista:hover {
     background-color: #0056b3 !important;
 }
-/* =================== FIN DEL CAMBIO ==================== */
 
-/* Estilos de la lista de la Papelera */
-#papelera-lista li {
+#papelera-lista .task-item {
     background: linear-gradient(to bottom, #6c757d, #495057);
 }
 
-#papelera-lista li i {
-    margin-left: auto;
+#papelera-lista .task-icons i {
+    color: white;
 }
-#papelera-lista li i[data-action="restaurar"] {
+#papelera-lista i[data-action="restaurar"] {
     color: var(--papelera-icon-restore-color);
 }
-#papelera-lista li i[data-action="eliminar-perm"] {
+#papelera-lista i[data-action="eliminar-perm"] {
     color: var(--papelera-icon-delete-perm-color);
-    margin-left: 15px;
 }
 
-/* Estilos para la sección de Configuración */
 .config-options {
     padding: 15px;
     font-family: 'Open Sans', sans-serif;
@@ -642,7 +714,6 @@ h1 {
     font-size: 1.0rem;
 }
 
-/* ================== INICIO DEL CAMBIO: Estilos para el Nuevo Selector de Color ================== */
 .color-selector {
     display: flex;
     gap: 10px;
@@ -667,15 +738,12 @@ h1 {
     transform: scale(1.1);
 }
 
-/* COMENTARIO: Aplicamos los nuevos degradados a los puntos de selección */
 .color-dot.blue { background: linear-gradient(to bottom, var(--task-bg-gradient-start-blue), var(--task-bg-gradient-end-blue)); }
 .color-dot.red { background: linear-gradient(to bottom, var(--task-bg-gradient-start-red), var(--task-bg-gradient-end-red)); }
 .color-dot.yellow { background: linear-gradient(to bottom, var(--task-bg-gradient-start-yellow), var(--task-bg-gradient-end-yellow)); }
 .color-dot.lightgreen { background: linear-gradient(to bottom, var(--task-bg-gradient-start-lightgreen), var(--task-bg-gradient-end-lightgreen)); }
-/* =================== FIN DEL CAMBIO ==================== */
 
 
-/* Estilos para el control de tamaño de fuente */
 .font-size-control {
     display: flex;
     align-items: center;
@@ -688,8 +756,6 @@ h1 {
     width: 100px;
 }
 
-
-/* Estilos para el interruptor (toggle) */
 .toggle-switch {
     position: relative;
     display: inline-block;
