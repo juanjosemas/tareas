@@ -1,4 +1,4 @@
-/* ================== INICIO DEL CAMBIO: VARIABLES DE TEMA ================== */
+/* ================== INICIO DEL CAMBIO: NUEVOS COLORES ================== */
 :root {
     /* Tema Claro (por defecto) */
     --body-bg-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/nubes.jpg');
@@ -11,28 +11,38 @@
     --input-placeholder-color: gray;
     --icon-primary-color: indigo;
     --icon-voice-hover: #5c007a;
-    --task-bg-gradient-start: #2a73c2;
-    --task-bg-gradient-end: #2c7b90;
-    --task-text-color: white;
-    --task-completed-icon-color: lightgreen;
-    --task-icon-hover-color1: lightcoral;
-    --task-icon-hover-color2: red;
-    --task-copy-icon-hover-color: lightblue;
-    --button-action-bg: #e0e0e0;
-    --button-action-text: #333;
-    --button-action-hover-bg: #cccccc;
-    --theme-toggle-color: #444;
     --notification-bg: #333;
     --notification-text: white;
     --undo-button-bg: #ffc107;
     --undo-button-text: black;
     --empty-list-text: #555;
-    --export-import-bg: #4CAF50;
-    --export-import-text: white;
+    --menu-bg: #f0f0f0;
+    --menu-text-color: #333;
+    --menu-header-bg: #dcdcdc;
+    --menu-button-hover-bg: #e0e0e0;
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --papelera-header-bg: #f5f5f5;
+    --papelera-icon-restore-color: #2e7d32;
+    --papelera-icon-delete-perm-color: #c62828;
+    --config-header-bg: #f5f5f5;
+    --config-text-color: #333;
+    --toggle-slider-bg: #ccc;
+    --toggle-slider-checked-bg: #673ab7;
+    --task-font-size: 1.1rem;
+
+    /* COMENTARIO: Variables para los NUEVOS temas de tareas, actualizados según tu petición. */
+    --task-bg-gradient-start-blue: #0077b6; /* Azul más fuerte */
+    --task-bg-gradient-end-blue: #023e8a;
+    --task-bg-gradient-start-red: #ff758f; /* Se mantiene el rojo coral */
+    --task-bg-gradient-end-red: #ffb3c1;
+    --task-bg-gradient-start-yellow: #ffd670; /* Se mantiene el amarillo solar */
+    --task-bg-gradient-end-yellow: #ffb703;
+    --task-bg-gradient-start-lightgreen: #90ee90; /* Nuevo verde clarito */
+    --task-bg-gradient-end-lightgreen: #76c893;
 }
 
+/* Variables de tema para modo oscuro */
 body.dark-mode {
-    /* Tema Oscuro */
     --body-bg-image: linear-gradient(to bottom, rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.9)), url('img/nubes.jpg');
     --container-color: #adadff;
     --header-color: #e0e0e0;
@@ -43,32 +53,59 @@ body.dark-mode {
     --input-placeholder-color: #a0a0a0;
     --icon-primary-color: #9fa8da;
     --icon-voice-hover: #b39ddb;
-    --task-bg-gradient-start: #394263;
-    --task-bg-gradient-end: #3d5257;
-    --task-text-color: #e0e0e0;
-    --task-completed-icon-color: #81c784;
-    --task-icon-hover-color1: #ef9a9a;
-    --task-icon-hover-color2: #e57373;
-    --task-copy-icon-hover-color: #81d4fa;
-    --button-action-bg: #3a3a4a;
-    --button-action-text: #e0e0e0;
-    --button-action-hover-bg: #4a4a5a;
-    --theme-toggle-color: #ffc107;
     --notification-bg: #e0e0e0;
     --notification-text: black;
     --undo-button-bg: #673ab7;
     --undo-button-text: white;
     --empty-list-text: #aaa;
-    --export-import-bg: #673ab7;
-    --export-import-text: white;
+    --menu-bg: #2c2c3a;
+    --menu-text-color: #e0e0e0;
+    --menu-header-bg: #1a1a24;
+    --menu-button-hover-bg: #3a3a4a;
+    --overlay-bg: rgba(0, 0, 0, 0.7);
+    --papelera-header-bg: #3a3a4a;
+    --papelera-icon-restore-color: #81c784;
+    --papelera-icon-delete-perm-color: #ef9a9a;
+    --config-header-bg: #3a3a4a;
+    --config-text-color: #e0e0e0;
+    --toggle-slider-bg: #5a5a6a;
+    --toggle-slider-checked-bg: #ffc107;
 }
-/* =================== FIN DEL CAMBIO: VARIABLES DE TEMA ==================== */
 
+/* COMENTARIO: Clases que aplican los nuevos temas de tareas al body */
+body.task-theme-blue {
+    --task-bg-gradient-start: var(--task-bg-gradient-start-blue);
+    --task-bg-gradient-end: var(--task-bg-gradient-end-blue);
+}
+body.task-theme-red {
+    --task-bg-gradient-start: var(--task-bg-gradient-start-red);
+    --task-bg-gradient-end: var(--task-bg-gradient-end-red);
+}
+body.task-theme-yellow {
+    --task-bg-gradient-start: var(--task-bg-gradient-start-yellow);
+    --task-bg-gradient-end: var(--task-bg-gradient-end-yellow);
+}
+body.task-theme-lightgreen {
+    --task-bg-gradient-start: var(--task-bg-gradient-start-lightgreen);
+    --task-bg-gradient-end: var(--task-bg-gradient-end-lightgreen);
+    --task-text-color: #004b23; /* Un verde oscuro para el texto, para que sea legible */
+}
+/* =================== FIN DEL CAMBIO ==================== */
+
+
+/* Estilos globales */
 * {
     box-sizing: border-box;
     padding: 1px;
     margin: 0;
-    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave para el cambio de tema */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.animations-disabled *,
+.animations-disabled *::before,
+.animations-disabled *::after {
+    transition: none !important;
+    animation: none !important;
 }
 
 body {
@@ -97,32 +134,55 @@ body {
     position: relative;
 }
 
-#theme-toggle-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 22px;
-    color: var(--theme-toggle-color);
-    padding: 5px;
-    border-radius: 50%;
-}
-#theme-toggle-button:hover {
-    opacity: 0.8;
+/* Estilos del encabezado */
+.header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 100%;
 }
 
 h1 {
+    flex-grow: 1;
     text-align: center;
     flex-shrink: 0; 
-    margin-bottom: 10px; 
+    margin-top: 2px;
+    margin-bottom: 10px;
+    margin-left: -20px;
     color: var(--header-color);
     font-style: italic;
+    font-size: 30px;
     text-decoration: underline;
     text-shadow: 3px 3px 1px var(--header-shadow-color), 5px 5px 2px var(--header-shadow-color), 8px 8px 3px var(--header-shadow-color);
+    user-select: none;
 }
 
+.header-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+#menu-trigger-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%; 
+    margin-right: 10px;
+    margin-left: 20px;
+    background-color: var(--header-color);     
+    border: 2px solid var(--header-shadow-color); 
+    box-shadow: 0 0 0 3px var(--header-color); 
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#menu-trigger-icon:hover {
+    transform: scale(1.1) rotate(20deg);
+}
+
+/* Estilos de la sección para agregar tarea */
 .agregar-tarea {
     background-color: var(--add-task-bg);
     border-radius: 15px;
@@ -194,75 +254,24 @@ h1 {
     color: #999; 
     cursor: default; 
     transform: scale(1); 
-
 }
 
 .agregar-tarea button#boton-grabar-voz.escuchando i { 
     color: red; 
     animation: pulseMic 1.2s infinite ease-in-out; 
-
 }
 
 @keyframes pulseMic { 
-0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } 
-
+    0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } 
 }
 
-/* ================== INICIO DEL CAMBIO: Estilos Botones de Acción ================== */
-.acciones-lista {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px; /* Espacio entre los botones */
-    margin: -10px 5px 0 0;
-}
 
-#boton-limpiar-completadas {
-    background-color: red;
-    color: black;
-    border: 5px solid black;
-    border-radius: 80px;
-    padding: 5px 2px;
-    cursor: pointer;
-    font-family: Piedra;
-    font-style: italic;
-    font-size: 10px;
-    order: 3; /* Pone este botón al final */
-}
-#boton-limpiar-completadas:hover {
-    background-color: var(--button-action-hover-bg);
-}
-
-#boton-exportar, #boton-importar {
-    background-color: var(--export-import-bg);
-    color: var(--export-import-text);
-    border: 2px solid var(--container-color);
-    border-radius: 10px;
-    padding: 4px 8px;
-    cursor: pointer;
-    font-family: 'Piedra', cursive;
-    font-size: 11px;
-    transition: opacity 0.2s;
-}
-
-#boton-exportar:hover, #boton-importar:hover {
-    opacity: 0.85;
-}
-
-#boton-exportar { order: 1; 
-
-}
-
-#boton-importar { order: 2; 
-
-}
-/* =================== FIN DEL CAMBIO ==================== */
-
-
+/* Clase de utilidad para ocultar elementos */
 .hidden {
     display: none !important;
 }
 
+/* Estilos de la lista de tareas */
 .seccion-tarea {
     margin-top: -15px;
     flex-grow: 1; 
@@ -271,10 +280,9 @@ h1 {
     -webkit-overflow-scrolling: touch; 
 }
 
-.seccion-tarea ul#lista { 
+.seccion-tarea ul#lista, .seccion-papelera ul#papelera-lista { 
     list-style: none; 
     padding-left: 0; 
-
 }
 
 @keyframes fadeIn {
@@ -282,30 +290,33 @@ h1 {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.seccion-tarea li {
+.seccion-tarea li, .seccion-papelera li {
     display: flex;
     align-items: center;
     background: linear-gradient(to bottom, var(--task-bg-gradient-start), var(--task-bg-gradient-end));
     border-radius: 12px;
     padding: 3px 10px;
-    color: var(--task-text-color);
+    color: white; 
     margin: 10px 5px; 
     box-shadow: 2px 4px 4px 4px var(--add-task-shadow);
     font-family: 'Piedra', cursive;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out, background-color 0.3s ease;
     position: relative; 
     overflow: hidden; 
     flex-shrink: 0; 
-    cursor: grab;
     animation: fadeIn 0.4s ease-out;
 }
 
-.seccion-tarea li.removing {
+.seccion-tarea li {
+    cursor: grab;
+}
+
+.seccion-tarea li.removing, .seccion-papelera li.removing {
     transform: scale(0.9);
     opacity: 0;
 }
 
-#mensaje-lista-vacia {
+#mensaje-lista-vacia, #mensaje-papelera-vacia {
     text-align: center;
     padding: 20px;
     color: var(--empty-list-text);
@@ -313,7 +324,7 @@ h1 {
     font-size: 1.5rem;
 }
 
-.seccion-tarea li i { 
+.seccion-tarea li i, .seccion-papelera li i { 
     font-size: 17px; cursor: pointer; 
     transition: color 0.2s; 
     flex-shrink: 0; 
@@ -321,11 +332,10 @@ h1 {
 }
 .seccion-tarea li i[data-action="toggleRealizado"] { 
     margin-right: 5px; 
-
 }
 
-.seccion-tarea li p.text { 
-    font-size: 1.1rem; 
+.seccion-tarea li p.text, .seccion-papelera li p.text { 
+    font-size: var(--task-font-size); 
     color: var(--task-text-color);             
     font-style: italic; 
     flex-grow: 1; 
@@ -337,72 +347,46 @@ h1 {
     -ms-user-select: none; 
     min-width: 0; 
     text-align: left; 
-
 }
 
 .seccion-tarea li i[data-action="copiar"] { 
     margin-left: auto; 
-
 }
 
 .seccion-tarea li i[data-action="eliminar"] { 
     margin-left: 8px; 
-    
 }
 
 .seccion-tarea i.fa-circle:hover, .seccion-tarea i.fa-check-circle:hover { 
     color: var(--task-icon-hover-color1); 
-
 }
 
 .seccion-tarea i.fa-trash:hover { 
     color: var(--task-icon-hover-color2); 
-
 }
 
 .seccion-tarea i.fa-copy:hover { 
     color: var(--task-copy-icon-hover-color); 
-    
 }
 
 .line-through{ 
     text-decoration: line-through;     
     text-decoration-color: var(--header-shadow-color);     
     text-decoration-style: wavy; 
-    
 }
 
 .fa-circle{ 
     color: var(--task-text-color); 
-    
 }
 
 .fa-check-circle { 
     color: var(--task-completed-icon-color); 
-
 }
 
-.ico{ 
-    border-radius: 50%; 
-    margin: 10px 20px 0 -60px;     
-    animation-name: logo;     
-    animation-duration: 3s; 
-    transition: all 0.5s ease-in-out;     
-    background-color: var(--header-color);     
-    border: 2px solid var(--header-shadow-color); 
-    box-shadow: 0 0 0 3px var(--header-color); 
-    
-}
-
-@keyframes logo{ from{ 
-    opacity: 0; 
-    transform: scale(0.5) rotate(0deg); 
-} 
-
-to{ 
-    opacity: 1; 
-    transform: scale(1) rotate(1440deg); } 
-    
+.ico{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
 }
 
 .edit-task-input { 
@@ -421,15 +405,14 @@ to{
     min-height: 30px; 
     width: auto; 
     min-width: 0; 
-
 }
 
+/* Estilos para arrastrar y soltar (Drag and Drop) */
 #lista li.dragging-task { 
     opacity: 1; 
     background: var(--task-bg-gradient-end);     
     box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
     cursor: grabbing; 
-    
 }
 
 .placeholder-task { 
@@ -439,19 +422,18 @@ to{
     margin: 10px 5px; 
     box-sizing: border-box; 
     list-style-type: none !important; 
-
 }
 
 #lista li.dragging-task { 
     touch-action: none; 
-
 }
 
+/* Estilos para la Notificación */
 #notification-container {
     position: fixed;
-    bottom: -100px;
+    bottom: 20px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, 150%); 
     background-color: var(--notification-bg);
     color: var(--notification-text);
     padding: 12px 20px;
@@ -462,12 +444,16 @@ to{
     display: flex;
     align-items: center;
     gap: 15px;
-    transition: bottom 0.5s ease-in-out;
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
 }
 
 #notification-container.show {
-    bottom: 20px;
+    transform: translate(-50%, 0);
+    opacity: 1;
+    visibility: visible;
 }
 
 #undo-button {
@@ -484,4 +470,267 @@ to{
 
 #undo-button:hover {
     opacity: 0.9;
+}
+
+/* Estilos para el Menú Lateral */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--overlay-bg);
+    z-index: 1999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+#side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background-color: var(--menu-bg);
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+}
+
+#side-menu.show {
+    transform: translateX(0);
+}
+
+.menu-header {
+    padding: 20px 15px;
+    background-color: var(--menu-header-bg);
+    font-family: 'Piedra', cursive;
+    font-size: 1.5rem;
+    color: var(--menu-text-color);
+    text-align: center;
+}
+
+#side-menu ul {
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+#side-menu ul li button {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 15px 20px;
+    border: none;
+    background: none;
+    color: var(--menu-text-color);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+#side-menu ul li button:hover {
+    background-color: var(--menu-button-hover-bg);
+}
+
+#side-menu ul li button i {
+    font-size: 1.2rem;
+    width: 25px;
+    text-align: center;
+}
+
+/* Estilos para las vistas de Papelera y Configuración */
+.seccion-papelera, .seccion-configuracion {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.papelera-header, .config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 10px 5px 0 5px;
+    background-color: var(--papelera-header-bg);
+    border-radius: 8px;
+    color: var(--header-color);
+}
+
+.papelera-header h2, .config-header h2 {
+    font-family: 'Piedra', cursive;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.papelera-header button, .config-header button {
+    background: transparent;
+    border: none;
+    color: var(--header-color);
+    font-size: 1.0rem;
+    cursor: pointer;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.papelera-header button:hover, .config-header button:hover {
+    opacity: 0.8;
+}
+
+/* ================== INICIO DEL CAMBIO: Estilos para el botón Volver ================== */
+.boton-volver-lista {
+    background-color: #007bff !important; /* Usamos !important para asegurar que sobreescriba otras reglas */
+    color: white !important;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.boton-volver-lista:hover {
+    background-color: #0056b3 !important;
+}
+/* =================== FIN DEL CAMBIO ==================== */
+
+/* Estilos de la lista de la Papelera */
+#papelera-lista li {
+    background: linear-gradient(to bottom, #6c757d, #495057);
+}
+
+#papelera-lista li i {
+    margin-left: auto;
+}
+#papelera-lista li i[data-action="restaurar"] {
+    color: var(--papelera-icon-restore-color);
+}
+#papelera-lista li i[data-action="eliminar-perm"] {
+    color: var(--papelera-icon-delete-perm-color);
+    margin-left: 15px;
+}
+
+/* Estilos para la sección de Configuración */
+.config-options {
+    padding: 15px;
+    font-family: 'Open Sans', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--add-task-bg);
+    border-radius: 8px;
+    color: var(--config-text-color);
+    box-shadow: 1px 2px 2px 2px var(--add-task-shadow);
+}
+
+.setting-item span {
+    font-size: 1.0rem;
+}
+
+/* ================== INICIO DEL CAMBIO: Estilos para el Nuevo Selector de Color ================== */
+.color-selector {
+    display: flex;
+    gap: 10px;
+}
+.color-selector input {
+    display: none;
+}
+.color-selector .color-dot {
+    display: block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+.color-selector .color-dot:hover {
+    transform: scale(1.1);
+}
+.color-selector input:checked + .color-dot {
+    border-color: var(--config-text-color);
+    transform: scale(1.1);
+}
+
+/* COMENTARIO: Aplicamos los nuevos degradados a los puntos de selección */
+.color-dot.blue { background: linear-gradient(to bottom, var(--task-bg-gradient-start-blue), var(--task-bg-gradient-end-blue)); }
+.color-dot.red { background: linear-gradient(to bottom, var(--task-bg-gradient-start-red), var(--task-bg-gradient-end-red)); }
+.color-dot.yellow { background: linear-gradient(to bottom, var(--task-bg-gradient-start-yellow), var(--task-bg-gradient-end-yellow)); }
+.color-dot.lightgreen { background: linear-gradient(to bottom, var(--task-bg-gradient-start-lightgreen), var(--task-bg-gradient-end-lightgreen)); }
+/* =================== FIN DEL CAMBIO ==================== */
+
+
+/* Estilos para el control de tamaño de fuente */
+.font-size-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--config-text-color);
+}
+.font-size-control span:first-child { font-size: 0.8rem; }
+.font-size-control span:last-child { font-size: 1.2rem; }
+#font-size-slider {
+    width: 100px;
+}
+
+
+/* Estilos para el interruptor (toggle) */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--toggle-slider-bg);
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--toggle-slider-checked-bg);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
 }

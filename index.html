@@ -14,54 +14,154 @@
 </head>
 <body>
    
-  <div class="container">
-    <button id="theme-toggle-button" title="Cambiar tema">
-        <i class="fas fa-moon"></i>
-    </button>
+  <!-- Overlay que oscurece el fondo cuando el menú está abierto -->
+  <div id="overlay"></div>
 
-    <h1><img src="img/Juanjo.ico" class="ico" width="35">Lista de tareas</h1>
+  <!-- Panel del menú lateral -->
+  <nav id="side-menu">
+      <div class="menu-header">Menú</div>
+      <ul>
+          <li><button id="boton-ir-a-papelera"><i class="fas fa-trash-alt"></i> Papelera</button></li>
+          <li><button id="boton-limpiar-completadas"><i class="fas fa-check-double"></i> Limpiar Completadas</button></li>
+          <li><button id="boton-ir-a-configuracion"><i class="fas fa-cog"></i> Configuración</button></li>
+      </ul>
+  </nav>
+
+  <!-- Contenedor principal de la aplicación -->
+  <div class="container">
+    <div class="header">
+        <div class="header-title-container">
+            <div id="menu-trigger-icon" title="Abrir menú">
+                <img src="img/Juanjo.ico" class="ico">
+            </div>
+            <h1>Lista de tareas</h1>
+        </div>
+    </div>
   
     <br>
      
     <div class="perfil"> </div> 
    
-    <div class="agregar-tarea">
-        <input type="text" id="input" placeholder="Nueva tarea">
-        <i id="boton-enter" class="fas fa-check-circle"></i>
-        <button id="boton-grabar-voz" title="Agregar producto por voz">
-            <i class="fas fa-microphone"></i>
-        </button>
-    </div> 
+    <!-- Vista Principal: donde se añaden y se ven las tareas -->
+    <div id="vista-principal">
+        <div class="agregar-tarea">
+            <input type="text" id="input" placeholder="Nueva tarea">
+            <i id="boton-enter" class="fas fa-check-circle"></i>
+            <button id="boton-grabar-voz" title="Agregar producto por voz">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </div> 
 
-    <div class="acciones-lista">
-        <button id="boton-limpiar-completadas" class="hidden" title="Eliminar todas las tareas completadas">
-            Limpiar Completadas
-        </button>
+        <br>
+        
+        <div class="seccion-tarea">
+            <ul id="lista"></ul>
+            <div id="mensaje-lista-vacia" class="hidden">
+                <p>¡No hay tareas pendientes! Añade una para empezar.</p>
+            </div>
+        </div>   
     </div>
-    
-    <br>
-    
-    <div class="seccion-tarea">
-        <ul id="lista">
-            <!-- Los elementos de la lista se generarán aquí con JS -->
-        </ul>
-        <!-- ================== INICIO DEL CAMBIO ================== -->
-        <!-- NUEVO: Mensaje para cuando la lista está vacía -->
-        <div id="mensaje-lista-vacia" class="hidden">
-            <p>¡No hay tareas pendientes! Añade una para empezar.</p>
+
+    <!-- Vista de la Papelera: Muestra las tareas eliminadas -->
+    <div id="vista-papelera" class="hidden">
+        <div class="seccion-papelera">
+            <div class="papelera-header">
+                <button class="boton-volver-lista" title="Volver a la lista">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <h2>Papelera</h2>
+                <button id="boton-vaciar-papelera" title="Vaciar toda la papelera">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
+            <ul id="papelera-lista"></ul>
+            <div id="mensaje-papelera-vacia" class="hidden">
+                <p>La papelera está vacía.</p>
+            </div>
         </div>
-        <!-- =================== FIN DEL CAMBIO ==================== -->
-    </div>   
+    </div>
+
+    <!-- Vista de Configuración: Contiene las opciones de la aplicación -->
+    <div id="vista-configuracion" class="hidden">
+        <div class="seccion-configuracion">
+             <div class="config-header">
+                <button class="boton-volver-lista" title="Volver a la lista">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <h2>Configuración</h2>
+                <div style="width: 80px;"></div> 
+            </div>
+            <div class="config-options">
+                
+                <div class="setting-item">
+                    <span>Modo Oscuro</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="theme-toggle-switch">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- COMENTARIO: Selector de color con los nuevos temas actualizados -->
+                <div class="setting-item">
+                    <span>Color de Tareas</span>
+                    <div id="task-color-selector" class="color-selector">
+                        <label>
+                            <!-- El valor ahora es "blue" para el azul fuerte -->
+                            <input type="radio" name="task-color" value="blue" checked>
+                            <span class="color-dot blue"></span>
+                        </label>
+                        <label>
+                            <input type="radio" name="task-color" value="red">
+                            <span class="color-dot red"></span>
+                        </label>
+                        <label>
+                            <input type="radio" name="task-color" value="yellow">
+                            <span class="color-dot yellow"></span>
+                        </label>
+                        <label>
+                            <!-- El valor ahora es "lightgreen" para el nuevo verde claro -->
+                            <input type="radio" name="task-color" value="lightgreen">
+                            <span class="color-dot lightgreen"></span>
+                        </label>
+                    </div>
+                </div>
+
+                 <div class="setting-item">
+                    <span>Tamaño del Texto</span>
+                    <div class="font-size-control">
+                        <span>A</span>
+                        <input type="range" id="font-size-slider" min="0.9" max="1.5" step="0.1">
+                        <span>A</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <span>Animaciones</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="animations-toggle-switch">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <span>Pedir confirmación al borrar</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="confirmations-toggle-switch">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </div>
  
   </div>
     
-  <!-- ================== INICIO DEL CAMBIO ================== -->
-  <!-- NUEVO: Contenedor para notificaciones (Toast/Snackbar) -->
+  <!-- Contenedor de notificaciones que aparece en la parte inferior -->
   <div id="notification-container">
       <span id="notification-message"></span>
       <button id="undo-button" class="hidden">Deshacer</button>
   </div>
-  <!-- =================== FIN DEL CAMBIO ==================== -->
 
 <script src="script.js"></script>
 </body>
