@@ -171,6 +171,7 @@ h1 {
 }
 
 #menu-trigger-icon {
+    position: relative;
     width: 35px;
     height: 35px;
     border-radius: 50%; 
@@ -182,6 +183,20 @@ h1 {
     box-shadow: 0 0 0 3px var(--header-color); 
     cursor: pointer;
     transition: transform 0.3s ease;
+    animation: spin-on-load 0.8s ease-out; /* <-- LÍNEA RESTAURADA/AÑADIDA */
+}
+
+.menu-label {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    font-family: Piedra;
+    font-style: italic;
+    color: var(--header-color);
+    pointer-events: none;
+    user-select: none;
 }
 
 #menu-trigger-icon:hover {
@@ -328,6 +343,12 @@ h1 {
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* KEYFRAMES AÑADIDOS PARA LA ANIMACIÓN DEL ICONO */
+@keyframes spin-on-load {
+    from { transform: rotate(-360deg); }
+    to { transform: rotate(0deg); }
 }
 
 .task-item {
