@@ -399,6 +399,16 @@ h1 {
     margin-left: auto;
 }
 
+/* ====================================================================== */
+/* ================== INICIO: CORRECCIÓN DE COLOR ===================== */
+.task-content i.fa-tasks.has-subtasks {
+    color: #ff3333 !important; 
+    transform: scale(1.1);
+}
+/* =================== FIN: CORRECCIÓN DE COLOR ======================= */
+/* ====================================================================== */
+
+
 .progress-bar-container {
     height: 6px;
     background-color: var(--progress-bar-bg);

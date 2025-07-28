@@ -142,8 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // (El resto del script es idéntico al anterior)
-    // ...
     function procesarYAnadirTarea(nombreTarea) {
         const tareaLimpia = nombreTarea.trim();
         if (tareaLimpia) {
@@ -173,13 +171,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const isCompleted = item.realizado;
         const REALIZADO_CLASS = isCompleted ? check : uncheck;
         const LINE_CLASS = isCompleted ? lineThrough : '';
+        const hasSubtasksClass = item.subtasks && item.subtasks.length > 0 ? 'has-subtasks' : '';
 
         li.innerHTML = `
             <div class="task-content">
                 <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${item.id}"></i>
                 <p class="text ${LINE_CLASS}">${item.nombre}</p>
                 <div class="task-icons">
-                    <i class="fas fa-tasks" data-action="toggleSubtasks" id="${item.id}" title="Ver/Añadir subtareas"></i>
+                    <i class="fas fa-tasks ${hasSubtasksClass}" data-action="toggleSubtasks" id="${item.id}" title="Ver/Añadir subtareas"></i>
                     <i class="fas fa-copy" data-action="copiar" id="${item.id}" title="Copiar"></i>
                     <i class="fas fa-trash" data-action="eliminar" id="${item.id}" title="Eliminar"></i>
                 </div>
@@ -235,12 +234,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     id: `${parentId}-${Date.now()}`,
                     realizado: false,
                 };
+                if (!parentTask.subtasks) {
+                    parentTask.subtasks = []; // Asegura que subtasks sea un array
+                }
                 parentTask.subtasks.push(newSubtask);
                 localStorage.setItem('TODO', JSON.stringify(LIST));
                 renderSubtasks(parentId);
                 updateProgressBar(parentId);
                 inputElement.value = '';
                 playSound(soundAdd);
+                
+                const taskElement = document.getElementById(`elemento-${parentId}`);
+                if (taskElement) {
+                    const subtaskIcon = taskElement.querySelector('.fa-tasks');
+                    if (subtaskIcon) {
+                        subtaskIcon.classList.add('has-subtasks');
+                    }
+                }
             }
         }
     }
@@ -276,6 +286,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (parentTask) {
             parentTask.subtasks = parentTask.subtasks.filter(sub => sub.id !== subtaskId);
             localStorage.setItem('TODO', JSON.stringify(LIST));
+            
+            if (parentTask.subtasks.length === 0) {
+                const taskElement = document.getElementById(`elemento-${parentId}`);
+                if (taskElement) {
+                    const subtaskIcon = taskElement.querySelector('.fa-tasks');
+                    if (subtaskIcon) {
+                        subtaskIcon.classList.remove('has-subtasks');
+                    }
+                }
+            }
+
             renderSubtasks(parentId);
             updateProgressBar(parentId);
             playSound(soundDelete);
@@ -508,7 +529,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (item.eliminado === undefined) item.eliminado = false;
             if (item.subtasks === undefined) item.subtasks = [];
         });
-        id = Math.max(0, ...LIST.map(item => item.id)) + 1;
+        
+        let maxId = 0;
+        LIST.forEach(item => {
+            if (item && typeof item.id === 'number' && item.id > maxId) {
+                maxId = item.id;
+            }
+        });
+        id = maxId + 1;
+
         renderTasks();
     }
     
@@ -713,7 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const textoFinal = (guardar && inputElement.value.trim()) ? inputElement.value.trim() : tarea.nombre;
         tarea.nombre = textoFinal;
         localStorage.setItem('TODO', JSON.stringify(LIST));
-        renderTasks(); // Re-renderizar para que se aplique bien el texto
+        renderTasks();
     }
     
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
