@@ -183,7 +183,6 @@ h1 {
     box-shadow: 0 0 0 3px var(--header-color); 
     cursor: pointer;
     transition: transform 0.3s ease;
-    animation: spin-on-load 0.8s ease-out; /* <-- LÍNEA RESTAURADA/AÑADIDA */
 }
 
 .menu-label {
@@ -200,7 +199,7 @@ h1 {
 }
 
 #menu-trigger-icon:hover {
-    transform: scale(1.1) rotate(20deg);
+    transform: scale(1.1);
 }
 
 /* Estilos de la sección para agregar tarea */
@@ -270,7 +269,7 @@ h1 {
 .search-filter-container {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Reducido de 10px */
+    gap: 8px;
     margin: -5px 5px 5px 5px;
 }
 .search-box {
@@ -278,21 +277,21 @@ h1 {
     align-items: center;
     background-color: var(--add-task-bg);
     border-radius: 8px;
-    padding: 0 8px; /* Reducido padding horizontal */
+    padding: 0 8px;
     box-shadow: 1px 2px 2px 1px var(--add-task-shadow);
 }
 .search-box i {
     color: var(--input-placeholder-color);
-    font-size: 0.9rem; /* Reducido tamaño del icono */
+    font-size: 0.9rem;
 }
 #search-input {
     width: 100%;
     border: none;
     background: none;
-    padding: 6px 5px; /* Reducido padding vertical para hacerlo más bajo */
+    padding: 6px 5px;
     color: var(--header-color);
     font-family: 'Open Sans', sans-serif;
-    font-size: 0.9rem; /* Reducido tamaño de la fuente */
+    font-size: 0.9rem;
 }
 #search-input:focus {
     outline: none;
@@ -304,14 +303,14 @@ h1 {
 }
 .filter-btn {
     flex-grow: 1;
-    padding: 4px; /* Reducido padding para hacer los botones más bajos */
+    padding: 4px;
     border-radius: 8px;
     border: 1px solid var(--container-color);
     background-color: var(--add-task-bg);
     color: var(--header-color);
     cursor: pointer;
     font-family: 'Piedra', cursive;
-    font-size: 0.8rem; /* Reducido tamaño de la fuente */
+    font-size: 0.8rem;
     transition: background-color 0.2s, color 0.2s;
 }
 .filter-btn.active {
@@ -345,7 +344,6 @@ h1 {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* KEYFRAMES AÑADIDOS PARA LA ANIMACIÓN DEL ICONO */
 @keyframes spin-on-load {
     from { transform: rotate(-360deg); }
     to { transform: rotate(0deg); }
@@ -490,6 +488,7 @@ h1 {
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    animation: spin-on-load 0.8s ease-out;
 }
 
 .edit-task-input { 
