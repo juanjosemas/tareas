@@ -532,6 +532,7 @@ h1 {
     border-radius: 6px;
     margin-top: 5px;
     font-family: Lobster;
+    font-style: italic;
     color: var(--task-text-color);
 }
 /* El texto de un item de subtarea. */
@@ -545,6 +546,7 @@ h1 {
     font-size: 15px;
     padding: 4px;
     cursor: pointer;
+    font-style: italic;
 }
 /* Contenedor del campo de texto para añadir una nueva subtarea. */
 .add-subtask-wrapper {
@@ -559,10 +561,12 @@ h1 {
     padding: 6px 8px;
     color: var(--task-text-color);
     font-family: Lobster;
+    font-style: italic;
 }
 /* El texto de placeholder del input de subtarea. */
 .add-subtask-input::placeholder {
     color: rgba(255,255,255,0.7);
+    font-style: italic;
 }
 
 /* Estilo para los mensajes que aparecen cuando la lista principal o la papelera están vacías. */
