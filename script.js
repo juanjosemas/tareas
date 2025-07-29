@@ -224,82 +224,56 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Funciones de subtareas
     function addSubtask(inputElement, parentId) {
         const subtaskName = inputElement.value.trim();
         if (subtaskName) {
-            const parentTask = LIST.find(task => task.id === parentId);
-            if (parentTask) {
+            const parentTaskIndex = LIST.findIndex(task => task.id === parentId);
+            if (parentTaskIndex > -1) {
                 const newSubtask = {
                     nombre: subtaskName,
                     id: `${parentId}-${Date.now()}`,
                     realizado: false,
                 };
-                if (!parentTask.subtasks) {
-                    parentTask.subtasks = []; // Asegura que subtasks sea un array
+                if (!LIST[parentTaskIndex].subtasks) {
+                    LIST[parentTaskIndex].subtasks = [];
                 }
-                parentTask.subtasks.push(newSubtask);
+                LIST[parentTaskIndex].subtasks.push(newSubtask);
                 localStorage.setItem('TODO', JSON.stringify(LIST));
-                renderSubtasks(parentId);
-                updateProgressBar(parentId);
+                
                 inputElement.value = '';
                 playSound(soundAdd);
-                
-                const taskElement = document.getElementById(`elemento-${parentId}`);
-                if (taskElement) {
-                    const subtaskIcon = taskElement.querySelector('.fa-tasks');
-                    if (subtaskIcon) {
-                        subtaskIcon.classList.add('has-subtasks');
-                    }
-                }
+                renderTasks(); 
             }
         }
     }
 
     function subtaskRealizada(subtaskId, parentId) {
-        const parentTask = LIST.find(task => task.id === parentId);
-        if (parentTask) {
+        const parentTaskIndex = LIST.findIndex(task => task.id === parentId);
+        if (parentTaskIndex > -1) {
+            const parentTask = LIST[parentTaskIndex];
             const subtask = parentTask.subtasks.find(sub => sub.id === subtaskId);
+            
             if (subtask) {
                 subtask.realizado = !subtask.realizado;
-                const allSubtasksDone = parentTask.subtasks.every(s => s.realizado);
-                parentTask.realizado = allSubtasksDone;
+                parentTask.realizado = parentTask.subtasks.every(s => s.realizado);
                 
                 localStorage.setItem('TODO', JSON.stringify(LIST));
-                renderSubtasks(parentId);
-                updateProgressBar(parentId);
-
-                const taskElement = document.getElementById(`elemento-${parentId}`);
-                if (taskElement) {
-                    const checkIcon = taskElement.querySelector('[data-action="toggleRealizado"]');
-                    const textP = taskElement.querySelector('p.text');
-                    checkIcon.className = `fas ${parentTask.realizado ? check : uncheck}`;
-                    textP.classList.toggle('line-through', parentTask.realizado);
-                }
-
+                
                 if (subtask.realizado) playSound(soundComplete);
+                renderTasks(); 
             }
         }
     }
 
     function deleteSubtask(subtaskId, parentId) {
-        const parentTask = LIST.find(task => task.id === parentId);
-        if (parentTask) {
-            parentTask.subtasks = parentTask.subtasks.filter(sub => sub.id !== subtaskId);
+        const parentTaskIndex = LIST.findIndex(task => task.id === parentId);
+        if (parentTaskIndex > -1) {
+            LIST[parentTaskIndex].subtasks = LIST[parentTaskIndex].subtasks.filter(sub => sub.id !== subtaskId);
             localStorage.setItem('TODO', JSON.stringify(LIST));
             
-            if (parentTask.subtasks.length === 0) {
-                const taskElement = document.getElementById(`elemento-${parentId}`);
-                if (taskElement) {
-                    const subtaskIcon = taskElement.querySelector('.fa-tasks');
-                    if (subtaskIcon) {
-                        subtaskIcon.classList.remove('has-subtasks');
-                    }
-                }
-            }
-
-            renderSubtasks(parentId);
-            updateProgressBar(parentId);
             playSound(soundDelete);
+            renderTasks(); 
         }
     }
 
@@ -541,13 +515,24 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks();
     }
     
+    // =================================================================================
+    // ================== INICIO: Ocultar teclado al añadir tarea/subtarea =============
     // EVENT LISTENERS
     botonEnter.addEventListener('click', () => {
-        if (procesarYAnadirTarea(input.value)) input.value = '';
+        if (procesarYAnadirTarea(input.value)) {
+            input.value = '';
+            input.blur(); // <-- AÑADIDO: Quita el foco del input principal para ocultar el teclado.
+        }
     });
     input.addEventListener('keyup', (event) => {
-        if (event.key === 'Enter' && procesarYAnadirTarea(input.value)) input.value = '';
+        if (event.key === 'Enter' && procesarYAnadirTarea(input.value)) {
+            input.value = '';
+            input.blur(); // <-- AÑADIDO: Quita el foco del input principal para ocultar el teclado.
+        }
     });
+    // =================== FIN: Ocultar teclado al añadir tarea/subtarea ==============
+    // =================================================================================
+
 
     lista.addEventListener('click', (event) => {
         const element = event.target;
@@ -573,12 +558,17 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (action === 'deleteSubtask') deleteSubtask(element.dataset.id, parentId);
     });
     
+    // =================================================================================
+    // ================== INICIO: Ocultar teclado al añadir subtarea ===================
     lista.addEventListener('keyup', (event) => {
         if (event.key === 'Enter' && event.target.classList.contains('add-subtask-input')) {
             const parentId = parseInt(event.target.closest('.task-item').id.replace('elemento-', ''));
             addSubtask(event.target, parentId);
+            event.target.blur(); // <-- AÑADIDO: Quita el foco del input de la subtarea para ocultar el teclado.
         }
     });
+    // =================== FIN: Ocultar teclado al añadir subtarea ====================
+    // =================================================================================
 
     searchInput.addEventListener('input', (e) => {
         searchTerm = e.target.value;
