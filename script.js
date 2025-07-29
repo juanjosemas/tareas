@@ -125,7 +125,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderTasks() {
+    // ================== INICIO CAMBIO: Se añade un parámetro "options" para más control ==================
+    function renderTasks(options = {}) {
+        const idToKeepClosed = options.idToKeepClosed; // Obtenemos el ID de la tarea a mantener cerrada
+    // =================== FIN CAMBIO ===================================================================
+
         // Guarda qué tareas tienen su contenedor de subtareas abierto
         const openSubtasks = new Set();
         document.querySelectorAll('.subtask-container.show').forEach(container => {
@@ -148,8 +152,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (filteredList.length > 0) {
              filteredList.forEach(item => {
                 agregarTareaAlDOM(item);
-                // Si la tarea estaba abierta antes de redibujar, la vuelve a abrir
-                if (openSubtasks.has(item.id)) {
+                
+                // ================== INICIO CAMBIO: Se añade una condición para no reabrir el desplegable ==================
+                // Si la tarea estaba abierta Y NO es la que acabamos de modificar, la vuelve a abrir.
+                if (openSubtasks.has(item.id) && item.id !== idToKeepClosed) {
+                // =================== FIN CAMBIO =========================================================================
                     const li = document.getElementById(`elemento-${item.id}`);
                     const container = li.querySelector('.subtask-container');
                     container.classList.add('show');
@@ -281,8 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
         inputElement.value = '';
         playSound(soundAdd);
         
-        // Redibuja toda la lista para mantener la consistencia visual y de filtros.
-        renderTasks();
+        // ================== INICIO CAMBIO: Se llama a renderTasks con una opción extra ==================
+        // Redibuja la lista y le pasa el ID de la tarea actual para que su desplegable no se vuelva a abrir.
+        renderTasks({ idToKeepClosed: parentId });
+        // =================== FIN CAMBIO ================================================================
     }
 
     /**
