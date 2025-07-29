@@ -1,39 +1,73 @@
 /* ================== INICIO: VARIABLES DE TEMA Y COLORES ================== */
+
+/* Define variables CSS globales que se usarán en toda la aplicación. */
+/* :root representa el elemento <html> y es el lugar perfecto para declarar variables globales. */
+/* Estas son las variables para el TEMA CLARO (el tema por defecto). */
 :root {
-    /* Tema Claro (por defecto) */
+    /* Fondo del cuerpo de la página */
     --body-bg-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)), url('img/nubes.jpg');
+    /* Color principal del contenedor (afecta a textos, botones, etc.) */
     --container-color: navy;
+    /* Color del título principal 'h1' */
     --header-color: black;
+    /* Color de la sombra del título principal */
     --header-shadow-color: red;
+    /* Color de fondo del área para agregar tareas */
     --add-task-bg: white;
+    /* Color de la sombra del área para agregar tareas */
     --add-task-shadow: rgba(71, 71, 71, 0.70);
+    /* Color de fondo del campo de texto (input) */
     --input-bg: white;
+    /* Color del texto de placeholder (ej: "Nueva tarea") */
     --input-placeholder-color: gray;
+    /* Color principal para iconos */
     --icon-primary-color: indigo;
+    /* Color del icono de voz al pasar el ratón por encima */
     --icon-voice-hover: #5c007a;
+    /* Color de fondo de las notificaciones */
     --notification-bg: #333;
+    /* Color de texto de las notificaciones */
     --notification-text: white;
+    /* Color de fondo del botón "Deshacer" */
     --undo-button-bg: #ffc107;
+    /* Color de texto del botón "Deshacer" */
     --undo-button-text: black;
+    /* Color del texto cuando la lista de tareas está vacía */
     --empty-list-text: #555;
+    /* Fondo del menú lateral */
     --menu-bg: #f0f0f0;
+    /* Color de texto en el menú lateral */
     --menu-text-color: #333;
+    /* Fondo de la cabecera del menú lateral */
     --menu-header-bg: #dcdcdc;
+    /* Color de fondo de los botones del menú al pasar el ratón */
     --menu-button-hover-bg: #e0e0e0;
+    /* Fondo oscuro semitransparente cuando el menú está abierto */
     --overlay-bg: rgba(0, 0, 0, 0.5);
+    /* Fondo de la cabecera de la papelera */
     --papelera-header-bg: #f5f5f5;
+    /* Color del icono de restaurar en la papelera */
     --papelera-icon-restore-color: #2e7d32;
+    /* Color del icono de eliminar permanentemente en la papelera */
     --papelera-icon-delete-perm-color: #c62828;
+    /* Fondo de la cabecera de la vista de configuración */
     --config-header-bg: #f5f5f5;
+    /* Color de texto en la vista de configuración */
     --config-text-color: #333;
+    /* Fondo del interruptor (toggle switch) cuando está apagado */
     --toggle-slider-bg: #ccc;
+    /* Fondo del interruptor cuando está encendido */
     --toggle-slider-checked-bg: #673ab7;
+    /* Tamaño de la fuente para el texto de las tareas */
     --task-font-size: 1.1rem;
+    /* Fondo de la barra de progreso de subtareas */
     --progress-bar-bg: rgba(255,255,255,0.3);
+    /* Color de relleno de la barra de progreso */
     --progress-bar-fill: #fca311;
+    /* Fondo para un elemento de subtarea */
     --subtask-bg: rgba(0,0,0,0.1);
 
-    /* Temas de tareas */
+    /* Colores base para los temas de las tareas */
     --task-bg-gradient-start-blue: #0077b6;
     --task-bg-gradient-end-blue: #023e8a;
     --task-bg-gradient-start-red: #ff758f;
@@ -44,7 +78,8 @@
     --task-bg-gradient-end-lightgreen: #76c893;
 }
 
-/* Variables de tema para modo oscuro */
+/* Cuando el <body> tiene la clase 'dark-mode', estas variables sobreescriben a las de :root */
+/* Así es como funciona el cambio de TEMA OSCURO. */
 body.dark-mode {
     --body-bg-image: linear-gradient(to bottom, rgba(20, 20, 30, 0.8), rgba(20, 20, 30, 0.9)), url('img/nubes.jpg');
     --container-color: #adadff;
@@ -77,7 +112,8 @@ body.dark-mode {
     --subtask-bg: rgba(255,255,255,0.05);
 }
 
-/* Clases que aplican los temas de tareas al body */
+/* Estas clases se añaden al <body> para cambiar el color de las tareas. */
+/* Definen el degradado que usará la variable '--task-bg-gradient-start/end'. */
 body.task-theme-blue {
     --task-bg-gradient-start: var(--task-bg-gradient-start-blue);
     --task-bg-gradient-end: var(--task-bg-gradient-end-blue);
@@ -93,19 +129,23 @@ body.task-theme-yellow {
 body.task-theme-lightgreen {
     --task-bg-gradient-start: var(--task-bg-gradient-start-lightgreen);
     --task-bg-gradient-end: var(--task-bg-gradient-end-lightgreen);
-    --task-text-color: #004b23;
+    --task-text-color: #004b23; /* Color de texto específico para este tema por legibilidad */
 }
 /* =================== FIN: VARIABLES DE TEMA Y COLORES =================== */
 
 
-/* Estilos globales */
+/* Estilos globales aplicados a todos los elementos (*) */
 * {
+    /* box-sizing: border-box hace que el padding y el borde se incluyan en el ancho/alto total del elemento. */
     box-sizing: border-box;
+    /* Resetea el padding y margen por defecto de los navegadores. */
     padding: 1px;
     margin: 0;
+    /* Añade una transición suave a los cambios de color para un efecto más agradable. */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Cuando el body tiene esta clase, se desactivan todas las animaciones y transiciones. */
 .animations-disabled *,
 .animations-disabled *::before,
 .animations-disabled *::after {
@@ -113,33 +153,43 @@ body.task-theme-lightgreen {
     animation: none !important;
 }
 
+/* Estilos para el cuerpo (<body>) de la página. */
 body {
+    /* Controla cómo se ajusta la imagen de fondo. */
     background-size: cover;
+    /* Evita que la imagen de fondo se repita. */
     background-repeat: no-repeat;
+    /* Centra la imagen de fondo. */
     background-position: center;
+    /* Fija la imagen de fondo para que no se desplace con el contenido. */
     background-attachment: fixed;
+    /* Usa la variable de imagen de fondo definida en :root o en .dark-mode. */
     background-image: var(--body-bg-image);
+    /* Flexbox para centrar el contenido principal. */
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Altura mínima para ocupar al menos el 80% de la pantalla. */
     min-height: 80vh;
     padding: 5px 0;
+    /* Permite el scroll vertical si el contenido es muy largo. */
     overflow-y: auto;
 }
 
+/* Estilo para el contenedor principal de la aplicación. */
 .container {
     max-width: 100%;
-    width: 400px;
-    margin: 0 auto;
-    font-family: Piedra, cursive;
-    color: var(--container-color);
-    overflow-x: hidden; 
+    width: 400px; /* Ancho fijo para la vista de escritorio. */
+    margin: 0 auto; /* Centra el contenedor. */
+    font-family: Piedra, cursive; /* Fuente principal. */
+    color: var(--container-color); /* Color principal del texto. */
+    overflow-x: hidden; /* Oculta el desbordamiento horizontal. */
     display: flex;
     flex-direction: column;
     position: relative;
 }
 
-/* Estilos del encabezado */
+/* Estilos del encabezado donde está el título y el menú. */
 .header {
     display: flex;
     justify-content: center;
@@ -148,21 +198,24 @@ body {
     width: 100%;
 }
 
+/* Estilos para el título principal "Lista de tareas". */
 h1 {
-    flex-grow: 1;
+    flex-grow: 1; /* Permite que ocupe el espacio disponible. */
     text-align: center;
     flex-shrink: 0; 
     margin-top: -2px;
     margin-left: -20px;
     margin-bottom: -5px;
-    color: var(--header-color);
+    color: var(--header-color); /* Color del texto del h1. */
     font-style: italic;
     font-size: 30px;
     text-decoration: underline;
+    /* Sombra de texto múltiple para un efecto 3D. */
     text-shadow: 3px 3px 1px var(--header-shadow-color), 5px 5px 2px var(--header-shadow-color), 8px 8px 3px var(--header-shadow-color);
-    user-select: none;
+    user-select: none; /* Evita que el usuario pueda seleccionar el texto. */
 }
 
+/* Contenedor para el título y el icono del menú para alinearlos correctamente. */
 .header-title-container {
     display: flex;
     align-items: center;
@@ -170,8 +223,9 @@ h1 {
     flex-grow: 1;
 }
 
+/* Estilo para el icono que abre el menú. */
 #menu-trigger-icon {
-    position: relative;
+    position: relative; /* Necesario para posicionar la etiqueta 'Menu' debajo. */
     width: 35px;
     height: 35px;
     border-radius: 50%; 
@@ -181,28 +235,30 @@ h1 {
     background-color: var(--header-color);     
     border: 2px solid var(--header-shadow-color); 
     box-shadow: 0 0 0 3px var(--header-color); 
-    cursor: pointer;
+    cursor: pointer; /* Cambia el cursor a una mano. */
     transition: transform 0.3s ease;
 }
 
+/* Estilo para el texto "Menu" que aparece debajo del icono. */
 .menu-label {
-    position: absolute;
-    bottom: -30px;
+    position: absolute; /* Posicionado relativo a '#menu-trigger-icon'. */
+    bottom: -30px; /* Lo coloca debajo del icono. */
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%); /* Centra el texto horizontalmente. */
     font-size: 0.9rem;
     font-family: Piedra;
     font-style: italic;
     color: var(--header-color);
-    pointer-events: none;
+    pointer-events: none; /* Hace que el texto no interfiera con el clic en el icono. */
     user-select: none;
 }
 
+/* Efecto de escala al pasar el ratón sobre el icono del menú. */
 #menu-trigger-icon:hover {
     transform: scale(1.1);
 }
 
-/* Estilos de la sección para agregar tarea */
+/* Estilos de la sección para agregar una nueva tarea. */
 .agregar-tarea {
     background-color: var(--add-task-bg);
     border-radius: 15px;
@@ -215,6 +271,7 @@ h1 {
     flex-shrink: 0; 
 }
 
+/* Estilos para el campo de texto (input) donde se escribe la nueva tarea. */
 .agregar-tarea input {
     width: 100%;
     flex-grow: 1;
@@ -232,12 +289,14 @@ h1 {
     min-width: 0;
 }
 
+/* Estilos para el texto de placeholder (ej. "Nueva tarea"). */
 .agregar-tarea input::placeholder {
    font-size: 1.4rem;
    color: var(--input-placeholder-color);
    font-family: 'Caveat', cursive;
 }
 
+/* Estilo para el icono de check (botón para añadir tarea). */
 .agregar-tarea i#boton-enter {
     font-size: 35px;
     color: var(--icon-primary-color);
@@ -246,10 +305,12 @@ h1 {
     flex-shrink: 0;
 }
 
+/* Efecto de escala al pasar el ratón sobre el icono de check. */
 .agregar-tarea i#boton-enter:hover {
     transform: scale(1.1);
 }
 
+/* Estilo para el botón de grabar voz. */
 .agregar-tarea button#boton-grabar-voz {
     background-color: transparent;
     border: none;
@@ -266,12 +327,14 @@ h1 {
 }
 
 /* ================== INICIO: Ajustes de tamaño de Búsqueda y Filtros ================== */
+/* Contenedor que agrupa la caja de búsqueda y los botones de filtro. */
 .search-filter-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 8px; /* Espacio entre la búsqueda y los filtros. */
     margin: -5px 5px 5px 5px;
 }
+/* Estilo de la caja que contiene el icono y el campo de búsqueda. */
 .search-box {
     display: flex;
     align-items: center;
@@ -280,10 +343,12 @@ h1 {
     padding: 0 8px;
     box-shadow: 1px 2px 2px 1px var(--add-task-shadow);
 }
+/* Estilo del icono de lupa dentro de la caja de búsqueda. */
 .search-box i {
     color: var(--input-placeholder-color);
     font-size: 0.9rem;
 }
+/* Estilo del campo de texto (input) para buscar. */
 #search-input {
     width: 100%;
     border: none;
@@ -293,16 +358,19 @@ h1 {
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9rem;
 }
+/* Elimina el borde azul que aparece al hacer clic en el campo de búsqueda. */
 #search-input:focus {
     outline: none;
 }
+/* Contenedor para los botones de filtro (Todas, Pendientes, Completadas). */
 .filter-buttons {
     display: flex;
     justify-content: space-around;
     gap: 8px;
 }
+/* Estilo para cada botón de filtro individual. */
 .filter-btn {
-    flex-grow: 1;
+    flex-grow: 1; /* Hace que todos los botones ocupen el mismo espacio. */
     padding: 4px;
     border-radius: 8px;
     border: 1px solid var(--container-color);
@@ -313,6 +381,7 @@ h1 {
     font-size: 0.8rem;
     transition: background-color 0.2s, color 0.2s;
 }
+/* Estilo que se aplica al botón de filtro que está activo. */
 .filter-btn.active {
     background-color: var(--container-color);
     color: white;
@@ -320,95 +389,108 @@ h1 {
 /* =================== FIN: Ajustes de tamaño de Búsqueda y Filtros =================== */
 
 
-/* Clase de utilidad para ocultar elementos */
+/* Clase de utilidad para ocultar elementos de la vista. */
 .hidden {
     display: none !important;
 }
 
-/* Estilos de la lista de tareas */
+/* Estilos de la sección que contiene la lista de tareas. */
 .seccion-tarea {
     margin-top: 0;
-    flex-grow: 1; 
-    overflow-y: auto; 
+    flex-grow: 1; /* Permite que la sección crezca para ocupar el espacio disponible. */
+    overflow-y: auto; /* Añade una barra de scroll si las tareas no caben. */
     min-height: 100px; 
-    -webkit-overflow-scrolling: touch; 
+    -webkit-overflow-scrolling: touch; /* Mejora el scroll en dispositivos iOS. */
 }
 
+/* Estilo común para las listas (<ul>) de tareas y de la papelera. */
 .seccion-tarea ul#lista, .seccion-papelera ul#papelera-lista { 
-    list-style: none; 
-    padding-left: 0; 
+    list-style: none; /* Elimina los puntos de la lista. */
+    padding-left: 0; /* Elimina el padding por defecto. */
 }
 
+/* Define una animación llamada 'fadeIn' para que los elementos aparezcan suavemente. */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* Define una animación llamada 'spin-on-load' para que el icono del menú gire al cargar. */
 @keyframes spin-on-load {
     from { transform: rotate(-360deg); }
     to { transform: rotate(0deg); }
 }
 
+/* Estilo para un solo elemento de tarea (el rectángulo de color). */
 .task-item {
+    /* Crea un fondo degradado usando las variables de color del tema. */
     background: linear-gradient(to bottom, var(--task-bg-gradient-start), var(--task-bg-gradient-end));
     border-radius: 12px;
     margin: 10px 5px; 
     box-shadow: 2px 4px 4px 4px var(--add-task-shadow);
     font-family: 'Piedra', cursive;
     transition: transform 0.3s ease-out, opacity 0.3s ease-out, background-color 0.3s ease;
+    /* Aplica la animación 'fadeIn' al crearse. */
     animation: fadeIn 0.4s ease-out;
-    overflow: hidden;
+    overflow: hidden; /* Oculta cualquier contenido que se salga del borde redondeado. */
 }
 
+/* Clase que se añade a una tarea para animar su eliminación. */
 .task-item.removing {
     transform: scale(0.9);
     opacity: 0;
 }
 
+/* Contenido interno de un item de tarea (iconos, texto). */
 .task-content {
     display: flex;
     align-items: center;
     padding: 3px 10px;
     color: white; 
     position: relative; 
-    cursor: grab;
+    cursor: grab; /* Indica que el elemento se puede arrastrar. */
 }
 
+/* Estilo para el texto (nombre) de la tarea. */
 .task-content p.text { 
-    font-size: var(--task-font-size); 
+    font-size: var(--task-font-size); /* Tamaño de fuente personalizable. */
     color: var(--task-text-color);             
     font-style: italic; 
-    flex-grow: 1; 
+    flex-grow: 1; /* Ocupa el espacio restante. */
     margin: 0 5px; 
-    word-break: break-word; 
+    word-break: break-word; /* Rompe palabras largas para que no se salgan. */
     user-select: none; 
     min-width: 0; 
     text-align: left; 
 }
 
+/* Estilo general para los iconos dentro de una tarea. */
 .task-content i {
-    font-size: 17px; cursor: pointer; 
+    font-size: 17px; 
+    cursor: pointer; 
     transition: color 0.2s; 
     flex-shrink: 0; 
     padding: 5px; 
 }
 
+/* Contenedor para los iconos de la derecha (subtareas, copiar, eliminar). */
 .task-icons {
     display: flex;
     align-items: center;
     margin-left: auto;
 }
 
-/* ====================================================================== */
 /* ================== INICIO: CORRECCIÓN DE COLOR ===================== */
+/* Estilo específico para el icono de subtareas cuando la tarea tiene subtareas. */
+/* El `!important` se usa para asegurar que este color sobreescriba otros estilos. */
 .task-content i.fa-tasks.has-subtasks {
     color: #ff3333 !important; 
     transform: scale(1.1);
 }
 /* =================== FIN: CORRECCIÓN DE COLOR ======================= */
-/* ====================================================================== */
 
 
+/* Contenedor de la barra de progreso de subtareas. */
 .progress-bar-container {
     height: 6px;
     background-color: var(--progress-bar-bg);
@@ -416,6 +498,7 @@ h1 {
     margin: 2px 10px 4px 10px;
     overflow: hidden;
 }
+/* Relleno de la barra de progreso. Su ancho cambia con JavaScript. */
 .progress-bar-fill {
     height: 100%;
     width: 0%;
@@ -424,18 +507,23 @@ h1 {
     transition: width 0.3s ease-in-out;
 }
 
+/* Contenedor desplegable para las subtareas. */
 .subtask-container {
-    max-height: 0;
+    max-height: 0; /* Por defecto está colapsado. */
     overflow: hidden;
+    /* La transición en max-height crea el efecto de despliegue. */
     transition: max-height 0.4s ease-in-out;
 }
+/* Cuando tiene la clase 'show', se expande. */
 .subtask-container.show {
-    max-height: 500px;
+    max-height: 500px; /* Un valor suficientemente grande. */
 }
+/* La lista que contiene los items de subtareas. */
 .subtask-list {
     list-style: none;
     padding: 0 10px 5px 30px;
 }
+/* Estilo para un solo item de subtarea. */
 .subtask-item {
     display: flex;
     align-items: center;
@@ -446,19 +534,23 @@ h1 {
     font-family: Lobster;
     color: var(--task-text-color);
 }
+/* El texto de un item de subtarea. */
 .subtask-item p.text {
-    font-size: calc(var(--task-font-size) * 0.9);
+    font-size: calc(var(--task-font-size) * 0.9); /* Un poco más pequeño que la tarea principal. */
     flex-grow: 1;
     margin: 0 8px;
 }
+/* Iconos dentro de un item de subtarea. */
 .subtask-item i {
     font-size: 15px;
     padding: 4px;
     cursor: pointer;
 }
+/* Contenedor del campo de texto para añadir una nueva subtarea. */
 .add-subtask-wrapper {
     padding: 0 10px 10px 30px;
 }
+/* El campo de texto (input) para escribir una nueva subtarea. */
 .add-subtask-input {
     width: 100%;
     background: rgba(255,255,255,0.2);
@@ -466,12 +558,14 @@ h1 {
     border-radius: 6px;
     padding: 6px 8px;
     color: var(--task-text-color);
-    font-family: 'Open Sans', sans-serif;
+    font-family: Lobster;
 }
+/* El texto de placeholder del input de subtarea. */
 .add-subtask-input::placeholder {
     color: rgba(255,255,255,0.7);
 }
 
+/* Estilo para los mensajes que aparecen cuando la lista principal o la papelera están vacías. */
 #mensaje-lista-vacia, #mensaje-papelera-vacia {
     text-align: center;
     padding: 20px;
@@ -480,27 +574,33 @@ h1 {
     font-size: 1.5rem;
 }
 
+/* Clase para tachar el texto de las tareas completadas. */
 .line-through{ 
     text-decoration: line-through;     
     text-decoration-color: var(--header-shadow-color);     
-    text-decoration-style: wavy; 
+    text-decoration-style: wavy; /* Estilo de tachado ondulado. */
 }
 
+/* Color del icono de círculo (tarea no completada). */
 .fa-circle{ 
     color: var(--task-text-color); 
 }
 
+/* Color del icono de check (tarea completada). */
 .fa-check-circle { 
     color: var(--task-completed-icon-color); 
 }
 
+/* Estilo para la imagen del icono del menú. */
 .ico{
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    /* Aplica la animación de giro al cargar la página. */
     animation: spin-on-load 0.8s ease-out;
 }
 
+/* Estilo para el campo de texto que aparece al editar una tarea (doble clic). */
 .edit-task-input { 
     flex-grow: 1; 
     padding: 8px; 
@@ -519,13 +619,15 @@ h1 {
     min-width: 0; 
 }
 
+/* Estilo que se aplica a una tarea mientras se está arrastrando. */
 #lista .task-item.dragging-task .task-content { 
     opacity: 1; 
     background: var(--task-bg-gradient-end);     
     box-shadow: 0 6px 12px rgba(0,0,0,0.3); 
-    cursor: grabbing; 
+    cursor: grabbing; /* El cursor cambia para indicar que se está arrastrando. */
 }
 
+/* Estilo para el espacio punteado que muestra dónde se soltará una tarea. */
 .placeholder-task { 
     background-color: rgba(42, 115, 194, 0.2); 
     border: 2px dashed var(--task-bg-gradient-start);   
@@ -535,14 +637,17 @@ h1 {
     list-style-type: none !important; 
 }
 
+/* Desactiva acciones táctiles por defecto en el elemento que se arrastra para evitar conflictos. */
 #lista .task-item.dragging-task { 
     touch-action: none; 
 }
 
+/* Contenedor para la notificación que aparece en la parte inferior. */
 #notification-container {
-    position: fixed;
+    position: fixed; /* Fijo en la pantalla. */
     bottom: 20px;
     left: 50%;
+    /* Por defecto está fuera de la pantalla. El 'transform' lo mueve al centro. */
     transform: translate(-50%, 150%); 
     background-color: var(--notification-bg);
     color: var(--notification-text);
@@ -557,15 +662,17 @@ h1 {
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     z-index: 1000;
     opacity: 0;
-    visibility: hidden;
+    visibility: hidden; /* Oculto por defecto. */
 }
 
+/* Cuando se añade la clase 'show', la notificación aparece. */
 #notification-container.show {
     transform: translate(-50%, 0);
     opacity: 1;
     visibility: visible;
 }
 
+/* Estilo para el botón "Deshacer" dentro de la notificación. */
 #undo-button {
     background-color: var(--undo-button-bg);
     color: var(--undo-button-text);
@@ -578,10 +685,12 @@ h1 {
     font-size: 0.8rem;
 }
 
+/* Efecto al pasar el ratón sobre el botón "Deshacer". */
 #undo-button:hover {
     opacity: 0.9;
 }
 
+/* Fondo oscuro semitransparente que cubre la pantalla cuando el menú está abierto. */
 #overlay {
     position: fixed;
     top: 0;
@@ -595,11 +704,13 @@ h1 {
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+/* Cuando tiene la clase 'show', el fondo oscuro se hace visible. */
 #overlay.show {
     opacity: 1;
     visibility: visible;
 }
 
+/* Estilo del panel del menú lateral. */
 #side-menu {
     position: fixed;
     top: 0;
@@ -608,17 +719,19 @@ h1 {
     height: 100%;
     background-color: var(--menu-bg);
     box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-    transform: translateX(-100%);
+    transform: translateX(-100%); /* Por defecto está fuera de la pantalla a la izquierda. */
     transition: transform 0.3s ease-in-out;
-    z-index: 2000;
+    z-index: 2000; /* Se asegura de que esté por encima del overlay. */
     display: flex;
     flex-direction: column;
 }
 
+/* Cuando tiene la clase 'show', el menú se desliza hacia adentro. */
 #side-menu.show {
     transform: translateX(0);
 }
 
+/* Cabecera del menú lateral (donde dice "Menú"). */
 .menu-header {
     padding: 20px 15px;
     background-color: var(--menu-header-bg);
@@ -628,6 +741,7 @@ h1 {
     text-align: center;
 }
 
+/* Lista de opciones dentro del menú. */
 #side-menu ul {
     list-style: none;
     padding: 10px 0;
@@ -635,6 +749,7 @@ h1 {
     flex-grow: 1;
 }
 
+/* Botones dentro del menú (Papelera, Configuración, etc.). */
 #side-menu ul li button {
     display: flex;
     align-items: center;
@@ -650,16 +765,19 @@ h1 {
     cursor: pointer;
 }
 
+/* Efecto al pasar el ratón por encima de los botones del menú. */
 #side-menu ul li button:hover {
     background-color: var(--menu-button-hover-bg);
 }
 
+/* Iconos dentro de los botones del menú. */
 #side-menu ul li button i {
     font-size: 1.2rem;
     width: 25px;
     text-align: center;
 }
 
+/* Estilos comunes para las secciones de Papelera y Configuración. */
 .seccion-papelera, .seccion-configuracion {
     width: 100%;
     flex-grow: 1;
@@ -667,6 +785,7 @@ h1 {
     flex-direction: column;
 }
 
+/* Cabeceras de las vistas de Papelera y Configuración. */
 .papelera-header, .config-header {
     display: flex;
     justify-content: space-between;
@@ -678,12 +797,14 @@ h1 {
     color: var(--header-color);
 }
 
+/* Títulos H2 dentro de esas cabeceras. */
 .papelera-header h2, .config-header h2 {
     font-family: 'Piedra', cursive;
     font-size: 1.5rem;
     margin: 0;
 }
 
+/* Botones genéricos dentro de esas cabeceras. */
 .papelera-header button, .config-header button {
     background: transparent;
     border: none;
@@ -692,10 +813,12 @@ h1 {
     font-family: 'Open Sans', sans-serif;
 }
 
+/* Efecto hover para esos botones. */
 .papelera-header button:hover, .config-header button:hover {
     opacity: 0.8;
 }
 
+/* Estilo específico para el botón "Volver". */
 .boton-volver-lista {
     background-color: #007bff !important;
     color: white !important;
@@ -703,24 +826,30 @@ h1 {
     border-radius: 5px;
 }
 
+/* Efecto hover para el botón "Volver". */
 .boton-volver-lista:hover {
     background-color: #0056b3 !important;
 }
 
+/* Estilo para las tareas cuando están en la papelera. */
 #papelera-lista .task-item {
-    background: linear-gradient(to bottom, #6c757d, #495057);
+    background: linear-gradient(to bottom, #6c757d, #495057); /* Fondo gris. */
 }
 
+/* Estilo de los iconos de las tareas en la papelera. */
 #papelera-lista .task-icons i {
     color: white;
 }
+/* Color específico para el icono de restaurar. */
 #papelera-lista i[data-action="restaurar"] {
     color: var(--papelera-icon-restore-color);
 }
+/* Color específico para el icono de eliminar permanentemente. */
 #papelera-lista i[data-action="eliminar-perm"] {
     color: var(--papelera-icon-delete-perm-color);
 }
 
+/* Contenedor para todas las opciones de configuración. */
 .config-options {
     padding: 15px;
     font-family: 'Open Sans', sans-serif;
@@ -729,6 +858,7 @@ h1 {
     gap: 15px;
 }
 
+/* Estilo para una fila de opción de configuración (texto + control). */
 .setting-item {
     display: flex;
     justify-content: space-between;
@@ -740,17 +870,21 @@ h1 {
     box-shadow: 1px 2px 2px 2px var(--add-task-shadow);
 }
 
+/* El texto de una opción (ej: "Modo Oscuro"). */
 .setting-item span {
     font-size: 1.0rem;
 }
 
+/* Contenedor para los puntos de selección de color. */
 .color-selector {
     display: flex;
     gap: 10px;
 }
+/* Oculta los botones de radio reales. */
 .color-selector input {
     display: none;
 }
+/* Estilo de los puntos de color visibles y clicables. */
 .color-selector .color-dot {
     display: block;
     width: 24px;
@@ -760,32 +894,40 @@ h1 {
     border: 2px solid transparent;
     transition: transform 0.2s;
 }
+/* Efecto de escala al pasar el ratón. */
 .color-selector .color-dot:hover {
     transform: scale(1.1);
 }
+/* Añade un borde al punto de color que está seleccionado. */
 .color-selector input:checked + .color-dot {
     border-color: var(--config-text-color);
     transform: scale(1.1);
 }
 
+/* Define el color de fondo para cada punto de color. */
 .color-dot.blue { background: linear-gradient(to bottom, var(--task-bg-gradient-start-blue), var(--task-bg-gradient-end-blue)); }
 .color-dot.red { background: linear-gradient(to bottom, var(--task-bg-gradient-start-red), var(--task-bg-gradient-end-red)); }
 .color-dot.yellow { background: linear-gradient(to bottom, var(--task-bg-gradient-start-yellow), var(--task-bg-gradient-end-yellow)); }
 .color-dot.lightgreen { background: linear-gradient(to bottom, var(--task-bg-gradient-start-lightgreen), var(--task-bg-gradient-end-lightgreen)); }
 
 
+/* Contenedor para el control de tamaño de fuente. */
 .font-size-control {
     display: flex;
     align-items: center;
     gap: 8px;
     color: var(--config-text-color);
 }
+/* La letra 'A' pequeña a la izquierda del slider. */
 .font-size-control span:first-child { font-size: 0.8rem; }
+/* La letra 'A' grande a la derecha del slider. */
 .font-size-control span:last-child { font-size: 1.2rem; }
+/* El slider de rango para cambiar el tamaño. */
 #font-size-slider {
     width: 100px;
 }
 
+/* Contenedor del interruptor (toggle switch). */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -793,12 +935,14 @@ h1 {
     height: 24px;
 }
 
+/* Oculta la casilla de verificación real. */
 .toggle-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
+/* El fondo del interruptor (la parte estática). */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -811,6 +955,7 @@ h1 {
     border-radius: 24px;
 }
 
+/* El círculo móvil del interruptor. */
 .slider:before {
     position: absolute;
     content: "";
@@ -823,10 +968,12 @@ h1 {
     border-radius: 50%;
 }
 
+/* Cambia el color del fondo del interruptor cuando está activado. */
 input:checked + .slider {
     background-color: var(--toggle-slider-checked-bg);
 }
 
+/* Mueve el círculo hacia la derecha cuando el interruptor está activado. */
 input:checked + .slider:before {
     transform: translateX(20px);
 }
