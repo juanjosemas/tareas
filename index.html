@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- user-scalable=no previene el zoom accidental en el móvil, mejorando la experiencia táctil -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Lista de tareas</title>  
     
+    <!-- Importación de fuentes de Google Fonts para la personalización de textos -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&displayfamily=Amatic+SC:wght@700&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Lobster&family=Metal+Mania&family=Yellowtail& family=Permanent+Marker&family=Piedra&family=Sriracha&display=swap" rel="stylesheet">
     
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Importación de Font Awesome para los iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+    <!-- Enlace a la hoja de estilos principal -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
    
-  <!-- Overlay que oscurece el fondo cuando el menú está abierto -->
+  <!-- Overlay: Capa semitransparente que cubre el fondo cuando un menú está abierto -->
   <div id="overlay"></div>
 
-  <!-- Panel del menú lateral -->
+  <!-- Panel del menú lateral (inicialmente oculto) -->
   <nav id="side-menu">
       <div class="menu-header">Menú</div>
       <ul>
@@ -29,6 +33,7 @@
 
   <!-- Contenedor principal de la aplicación -->
   <div class="container">
+    <!-- Cabecera con el icono de menú y el título -->
     <div class="header">
         <div class="header-title-container">
             <div id="menu-trigger-icon" title="Abrir menú">
@@ -57,7 +62,7 @@
         <div class="search-filter-container">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="search" id="search-input" placeholder="Buscar tarea...">
+                <input type="search" id="search-input" placeholder="Buscar tarea, descripción o etiqueta...">
             </div>
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="all">Todas</button>
@@ -66,6 +71,7 @@
             </div>
         </div>
         
+        <!-- Sección que contendrá la lista de tareas -->
         <div class="seccion-tarea">
             <ul id="lista"></ul>
             <div id="mensaje-lista-vacia" class="hidden">
@@ -74,7 +80,7 @@
         </div>   
     </div>
 
-    <!-- Vista de la Papelera: Muestra las tareas eliminadas -->
+    <!-- Vista de la Papelera (inicialmente oculta) -->
     <div id="vista-papelera" class="hidden">
         <div class="seccion-papelera">
             <div class="papelera-header">
@@ -93,7 +99,7 @@
         </div>
     </div>
 
-    <!-- Vista de Configuración: Contiene las opciones de la aplicación -->
+    <!-- Vista de Configuración (inicialmente oculta) -->
     <div id="vista-configuracion" class="hidden">
         <div class="seccion-configuracion">
              <div class="config-header">
@@ -164,14 +170,73 @@
             </div>
         </div>
     </div>
- 
   </div>
-    
+
   <!-- Contenedor de notificaciones que aparece en la parte inferior -->
   <div id="notification-container">
       <span id="notification-message"></span>
       <button id="undo-button" class="hidden">Deshacer</button>
   </div>
+
+  <!-- ============== INICIO: ELEMENTOS FLOTANTES ============== -->
+
+  <!-- Menú contextual para las tareas (inicialmente oculto) -->
+  <div id="context-menu" class="hidden">
+      <ul>
+          <li><button data-action="edit"><i class="fas fa-edit"></i> Editar Detalles</button></li>
+          <li><button data-action="toggleSubtasks"><i class="fas fa-tasks"></i> Subtareas/Notas</button></li>
+          <li><button data-action="copy"><i class="fas fa-copy"></i> Copiar Nombre</button></li>
+          <li><button data-action="delete"><i class="fas fa-trash"></i> Enviar a Papelera</button></li>
+      </ul>
+  </div>
+
+  <!-- Overlay para el modal (distinto del overlay del menú lateral) -->
+  <div id="modal-overlay" class="hidden"></div>
+  
+  <!-- Modal para editar todos los detalles de una tarea (inicialmente oculto) -->
+  <div id="edit-task-modal" class="hidden">
+      <div class="modal-header">
+          <h3 id="modal-title">Editar Tarea</h3>
+          <button class="close-modal-btn" title="Cerrar">×</button>
+      </div>
+      <div class="modal-content">
+          <div class="form-group">
+              <label for="modal-task-name">Nombre de la tarea</label>
+              <input type="text" id="modal-task-name" placeholder="¿Qué tienes que hacer?">
+          </div>
+          <div class="form-group">
+              <label for="modal-task-desc">Descripción / Notas</label>
+              <textarea id="modal-task-desc" placeholder="Añade más detalles aquí..."></textarea>
+          </div>
+          <div class="form-group">
+              <label for="modal-task-due-date">Fecha de Vencimiento</label>
+              <input type="date" id="modal-task-due-date">
+          </div>
+          <div class="form-group">
+              <label>Prioridad</label>
+              <div class="priority-options">
+                  <input type="radio" id="priority-high" name="modal-priority" value="alta">
+                  <label for="priority-high">Alta</label>
+
+                  <input type="radio" id="priority-medium" name="modal-priority" value="media">
+                  <label for="priority-medium">Media</label>
+                  
+                  <input type="radio" id="priority-low" name="modal-priority" value="baja">
+                  <label for="priority-low">Baja</label>
+              </div>
+          </div>
+          <div class="form-group">
+              <label for="modal-task-tags">Etiquetas (separadas por coma)</label>
+              <input type="text" id="modal-task-tags" placeholder="Ej: trabajo, personal, urgente">
+          </div>
+      </div>
+      <div class="modal-footer">
+          <button class="save-task-btn">Guardar Cambios</button>
+      </div>
+  </div>
+
+  <!-- =============== FIN: ELEMENTOS FLOTANTES =============== -->
+
 
   <!-- Elementos de audio para los efectos de sonido -->
   <audio id="sound-add" src="sounds/add.mp3" preload="auto"></audio>
