@@ -357,6 +357,7 @@ h1 {
     color: var(--header-color);
     cursor: pointer;
     font-family: 'Piedra', cursive;
+    font-style: italic;
     font-size: 0.8rem;
     transition: background-color 0.2s, color 0.2s;
 }
@@ -835,6 +836,7 @@ h1 {
     background: none;
     color: var(--menu-text-color);
     font-family: Sriracha, 'Open Sans', sans-serif;
+    font-style: italic;
     font-size: 1rem;
     text-align: left;
     cursor: pointer;
