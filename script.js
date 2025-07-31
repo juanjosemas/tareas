@@ -79,7 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ================== LÓGICA DE CONFIGURACIÓN ==================
     const defaultSettings = {
         theme: 'light',
-        taskColor: 'blue',
+        // CAMBIO: El color por defecto ahora es 'red'
+        taskColor: 'red',
         fontSize: 1.1,
         animations: true,
         confirmations: true,
@@ -583,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const task = LIST.find(t => t.id === taskId);
         if(!task) return;
         
-        // NUEVO: Añadir/quitar clase al botón del menú contextual
+        // Añadir/quitar clase al botón del menú contextual
         const subtaskBtn = contextMenu.querySelector('[data-action="toggleSubtasks"]');
         if (task.subtasks && task.subtasks.length > 0) {
             subtaskBtn.classList.add('has-subtasks-indicator');

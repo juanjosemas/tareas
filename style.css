@@ -120,7 +120,7 @@ body.task-theme-yellow {
 body.task-theme-lightgreen {
     --task-bg-gradient-start: var(--task-bg-gradient-start-lightgreen);
     --task-bg-gradient-end: var(--task-bg-gradient-end-lightgreen);
-    --task-text-color: #004b23; /* Color específico para que el texto sea legible en este fondo claro */
+    --task-text-color: #004b23;
 }
 
 /* ========================================================================= */
@@ -409,8 +409,6 @@ h1 {
     margin: 10px 5px; 
     box-shadow: 2px 4px 4px 4px var(--add-task-shadow);
     font-family: 'Piedra', cursive;
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out, background-color 0.3s ease, border 0.3s ease;
-    animation: fadeIn 0.4s ease-out;
     position: relative;
     overflow: hidden; 
 }
@@ -431,9 +429,9 @@ h1 {
 .task-content {
     display: flex;
     align-items: center;
-    padding: 8px 10px;
+    /* CAMBIO: Reducido el padding vertical para hacer las tareas más bajas */
+    padding: 2px 10px;
     color: white; 
-    cursor: grab; /* Indica que se puede arrastrar */
     flex-grow: 1;
 }
 
@@ -454,7 +452,8 @@ h1 {
     user-select: none; 
     text-align: left; 
     margin: 0;
-    padding: 5px 0; /* Área de toque más grande para el doble clic */
+    /* CAMBIO: Reducido el padding vertical para hacer las tareas más bajas */
+    padding: 3px 0;
 }
 
 /* Barra de color de prioridad a la izquierda */
@@ -528,13 +527,13 @@ h1 {
     padding: 8px 12px;
     border-radius: 50%;
     cursor: pointer;
-    transition: color 0.2s, transform 0.2s; /* Añadida transición */
+    transition: color 0.2s, transform 0.2s;
 }
 .task-actions .task-menu-trigger:hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* NUEVO: Cambia el color del icono de opciones si la tarea tiene subtareas */
+/* Cambia el color del icono de opciones si la tarea tiene subtareas */
 .task-actions .task-menu-trigger.has-subtasks {
     color: var(--header-shadow-color);
     transform: scale(1.15);
@@ -576,14 +575,15 @@ h1 {
 
 /* Estilos de la descripción/notas */
 .task-description {
-    padding: 5px 15px 10px 15px;
+    /* CAMBIO: Reducido el padding y margin para hacer la caja más pequeña */
+    padding: 4px 15px;
     font-family: 'Open Sans', sans-serif;
     font-size: 0.9rem;
     color: var(--task-text-color);
     white-space: pre-wrap; /* Respeta los saltos de línea */
     word-break: break-word;
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 .task-description h5 {
     font-family: 'Piedra', cursive;
@@ -670,7 +670,7 @@ h1 {
 .edit-task-input { 
     flex-grow: 1; 
     padding: 8px; 
-    margin: 5px 0; 
+    margin: 3px 0; /* Padding ajustado para la nueva altura */
     border: 1px solid #ccc;        
     border-radius: 8px; 
     font-size: var(--task-font-size); 
@@ -683,37 +683,6 @@ h1 {
     min-height: 30px; 
     width: 100%; 
     min-width: 0; 
-}
-
-/* ========================================================================= */
-/* =============== INICIO: ESTILOS PARA ARRASTRAR Y SOLTAR ================= */
-/* ========================================================================= */
-
-/* Estilo de la tarea mientras se está arrastrando */
-.task-item.dragging-task {
-    opacity: 0.8;
-    transform: scale(1.05);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    z-index: 100;
-}
-.task-item.dragging-task .task-content { 
-    cursor: grabbing; /* Cursor de "agarrando" */
-}
-/* Estilo del espacio punteado que muestra dónde se soltará la tarea */
-.placeholder-task { 
-    background-color: rgba(42, 115, 194, 0.2); 
-    border: 2px dashed var(--task-bg-gradient-start);   
-    border-radius: 12px; 
-    margin: 10px 5px; 
-    box-sizing: border-box; 
-    list-style-type: none !important; 
-}
-/* touch-action permite controlar la interacción táctil por defecto del navegador */
-#lista .task-item { 
-    touch-action: pan-y; /* Permite el scroll vertical si el toque es hacia arriba/abajo */
-}
-#lista .task-item.dragging-task { 
-    touch-action: none; /* Desactiva todo durante el arrastre para evitar conflictos */
 }
 
 /* ========================================================================= */
@@ -820,7 +789,7 @@ h1 {
     text-align: center;
 }
 
-/* NUEVO: Estilo para resaltar la opción de subtareas en el menú contextual */
+/* Estilo para resaltar la opción de subtareas en el menú contextual */
 #context-menu button.has-subtasks-indicator {
     color: var(--header-shadow-color);
     font-weight: bold;
@@ -998,6 +967,13 @@ h1 {
     border-color: var(--config-text-color);
     transform: scale(1.1);
 }
+
+/* CORRECCIÓN: Se han movido estas reglas fuera del bloque anterior para que funcionen */
+.color-dot.blue { background: linear-gradient(to bottom, var(--task-bg-gradient-start-blue), var(--task-bg-gradient-end-blue)); }
+.color-dot.red { background: linear-gradient(to bottom, var(--task-bg-gradient-start-red), var(--task-bg-gradient-end-red)); }
+.color-dot.yellow { background: linear-gradient(to bottom, var(--task-bg-gradient-start-yellow), var(--task-bg-gradient-end-yellow)); }
+.color-dot.lightgreen { background: linear-gradient(to bottom, var(--task-bg-gradient-start-lightgreen), var(--task-bg-gradient-end-lightgreen)); }
+
 
 .font-size-control {
     display: flex;
