@@ -419,18 +419,12 @@ h1 {
     position: relative;
 }
 
-/* Clase para la animación de eliminación */
-.task-item.removing {
-    transform: scale(0.9);
-    opacity: 0;
-}
-
 /* Contenido interno (check, texto, opciones) */
 .task-content {
     display: flex;
     align-items: center;
     /* CAMBIO: Reducido el padding vertical para hacer las tareas más bajas */
-    padding: 2px 10px;
+    padding: 1px 10px;
     color: white; 
     flex-grow: 1;
 }
@@ -472,7 +466,7 @@ h1 {
     align-items: center;
     gap: 8px;
     margin-top: 5px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: Lobster, 'Open Sans', sans-serif;
     font-size: 0.8rem;
     color: var(--task-text-color);
     opacity: 0.9;
@@ -577,8 +571,8 @@ h1 {
 .task-description {
     /* CAMBIO: Reducido el padding y margin para hacer la caja más pequeña */
     padding: 4px 15px;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 0.9rem;
+    font-family: Yellowtail, 'Open Sans', sans-serif;
+    font-size: 1.4rem;
     color: var(--task-text-color);
     white-space: pre-wrap; /* Respeta los saltos de línea */
     word-break: break-word;
@@ -700,7 +694,7 @@ h1 {
     padding: 12px 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    font-family: 'Open Sans', sans-serif;
+    font-family: Lobster, 'Open Sans', sans-serif;
     font-size: 1rem;
     display: flex;
     align-items: center;
@@ -777,7 +771,7 @@ h1 {
     color: var(--menu-text-color);
     width: 100%;
     text-align: left;
-    font-family: 'Open Sans', sans-serif;
+    font-family: Sriracha, 'Open Sans', sans-serif;
     font-size: 0.9rem;
     cursor: pointer;
 }
@@ -800,7 +794,7 @@ h1 {
     position: fixed;
     top: 0;
     left: 0;
-    width: 220px;
+    width: 190px;
     height: 100%;
     background-color: var(--menu-bg);
     box-shadow: 2px 0 5px rgba(0,0,0,0.2);
@@ -840,7 +834,7 @@ h1 {
     border: none;
     background: none;
     color: var(--menu-text-color);
-    font-family: 'Open Sans', sans-serif;
+    font-family: Sriracha, 'Open Sans', sans-serif;
     font-size: 1rem;
     text-align: left;
     cursor: pointer;
@@ -923,7 +917,7 @@ h1 {
 
 .config-options {
     padding: 15px;
-    font-family: 'Open Sans', sans-serif;
+    font-family: Lobster, 'Open Sans', sans-serif;
     display: flex;
     flex-direction: column;
     gap: 15px;

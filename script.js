@@ -79,8 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ================== LÓGICA DE CONFIGURACIÓN ==================
     const defaultSettings = {
         theme: 'light',
-        // CAMBIO: El color por defecto ahora es 'red'
-        taskColor: 'red',
+        taskColor: 'red', // Color por defecto establecido a 'red'
         fontSize: 1.1,
         animations: true,
         confirmations: true,
@@ -211,7 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 realizado: false,
                 eliminado: false,
                 subtasks: [],
-                prioridad: 'media',
+                // CAMBIO: La prioridad por defecto para nuevas tareas ahora es 'baja'.
+                prioridad: 'baja',
                 vencimiento: null,
                 descripcion: '',
                 etiquetas: []
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
         li.innerHTML = `
             <div class="task-main-content">
-                <div class="priority-indicator ${item.prioridad || 'media'}"></div>
+                <div class="priority-indicator ${item.prioridad || 'baja'}"></div>
                 <div class="task-content">
                     <i class="fas ${REALIZADO_CLASS}" data-action="toggleRealizado" id="${item.id}"></i>
                     <div class="task-details">
@@ -333,7 +333,18 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('TODO', JSON.stringify(LIST));
         if (subtask.realizado) playSound(soundComplete);
         
-        renderTasks({ keepClosedId: parentId });
+        // Mantenemos abierto el panel de la tarea que se está modificando
+        const openExtras = new Set();
+        document.querySelectorAll('.task-extra-container.show').forEach(container => {
+            openExtras.add(parseInt(container.closest('.task-item').id.replace('elemento-', '')));
+        });
+        renderTasks();
+        if(openExtras.has(parentId)){
+            const li = document.getElementById(`elemento-${parentId}`);
+            const container = li.querySelector('.task-extra-container');
+            container.classList.add('show');
+            renderExtraContent(parentId);
+        }
     }
 
     function deleteSubtask(subtaskId, parentId) {
@@ -496,7 +507,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.id = `elemento-${item.id}`;
             li.innerHTML = `
                 <div class="task-main-content">
-                    <div class="priority-indicator ${item.prioridad || 'media'}"></div>
+                    <div class="priority-indicator ${item.prioridad || 'baja'}"></div>
                     <div class="task-content" style="cursor: default;">
                         <p class="text ${item.realizado ? lineThrough : ''}">${item.nombre}</p>
                         <div class="task-actions">
@@ -627,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTaskDueDate.value = task.vencimiento || '';
         modalTaskTags.value = task.etiquetas ? task.etiquetas.join(', ') : '';
         
-        const priorityInput = document.querySelector(`input[name="modal-priority"][value="${task.prioridad}"]`);
+        const priorityInput = document.querySelector(`input[name="modal-priority"][value="${task.prioridad || 'baja'}"]`);
         if (priorityInput) priorityInput.checked = true;
 
         modalOverlay.classList.add('show');
@@ -650,7 +661,7 @@ document.addEventListener('DOMContentLoaded', () => {
         task.vencimiento = modalTaskDueDate.value;
         
         const priorityInput = document.querySelector('input[name="modal-priority"]:checked');
-        task.prioridad = priorityInput ? priorityInput.value : 'media';
+        task.prioridad = priorityInput ? priorityInput.value : 'baja';
 
         task.etiquetas = modalTaskTags.value.split(',')
                                      .map(tag => tag.trim())
@@ -694,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
         LIST.forEach(item => { 
             if (item.eliminado === undefined) item.eliminado = false;
             if (!Array.isArray(item.subtasks)) item.subtasks = [];
-            if (item.prioridad === undefined) item.prioridad = 'media';
+            if (item.prioridad === undefined) item.prioridad = 'baja'; // Fallback a 'baja'
             if (item.vencimiento === undefined) item.vencimiento = null;
             if (item.descripcion === undefined) item.descripcion = '';
             if (!Array.isArray(item.etiquetas)) item.etiquetas = [];
@@ -733,9 +744,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const parentId = parseInt(parentLi.id.replace('elemento-', ''));
         const action = element.dataset.action;
         
-        if (action === 'toggleRealizado') tareaRealizada(element);
-        else if (action === 'openContextMenu') openContextMenu(event, parentId);
-        else if (element.closest('.subtask-item')) {
+        if (action === 'toggleRealizado') {
+            tareaRealizada(element);
+        } else if (action === 'openContextMenu') {
+            // CAMBIO: Lógica para cerrar el panel si ya está abierto
+            const extraContainer = parentLi.querySelector('.task-extra-container');
+            if (extraContainer && extraContainer.classList.contains('show')) {
+                extraContainer.classList.remove('show');
+            } else {
+                openContextMenu(event, parentId);
+            }
+        } else if (element.closest('.subtask-item')) {
             const subtaskId = element.dataset.id;
             const subParentId = parseInt(element.dataset.parentId);
             if (action === 'toggleSubtask') subtaskRealizada(subtaskId, subParentId);
