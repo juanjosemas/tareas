@@ -883,20 +883,23 @@ h1 {
 .papelera-header button, .config-header button {
     background: transparent;
     border: none;
-    font-size: 1.0rem;
+    font-size: 1.3rem;
     cursor: pointer;
-    font-family: 'Open Sans', sans-serif;
+    font-family: Caveat, 'Open Sans', sans-serif;
 }
 
 .papelera-header button:hover, .config-header button:hover {
     opacity: 0.8;
 }
-
+/* Boton "volver"y palabra "Configuracion" */
 .boton-volver-lista {
     background-color: #007bff !important;
     color: white !important;
-    padding: 5px 10px;
+    padding: 5px 5px;
     border-radius: 5px;
+    margin-right: 50px;
+ /* Si hay dos lineas para que esten juntas y no una encima de otra */
+    white-space: nowrap;
 }
 
 .boton-volver-lista:hover {
