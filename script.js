@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ================== LÓGICA DE CONFIGURACIÓN ==================
     const defaultSettings = {
         theme: 'light',
-        taskColor: 'red', // Color por defecto establecido a 'red'
+        taskColor: 'red',
         fontSize: 1.1,
         animations: true,
         confirmations: true,
@@ -210,7 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 realizado: false,
                 eliminado: false,
                 subtasks: [],
-                // CAMBIO: La prioridad por defecto para nuevas tareas ahora es 'baja'.
                 prioridad: 'baja',
                 vencimiento: null,
                 descripcion: '',
@@ -237,8 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const LINE_CLASS = isCompleted ? lineThrough : '';
         const formattedDate = formatDueDate(item.vencimiento);
         const overdueClass = isOverdue(item.vencimiento) && !item.realizado ? 'overdue' : '';
-        const hasSubtasksClass = (item.subtasks && item.subtasks.length > 0) ? 'has-subtasks' : '';
-    
+        
+        // Se comprueba si la tarea tiene subtareas O si tiene una descripción que no esté vacía.
+        const hasExtraContent = (item.subtasks && item.subtasks.length > 0) || (item.descripcion && item.descripcion.trim() !== '');
+        const extraContentClass = hasExtraContent ? 'has-extra-content' : '';
+
+        // Ahora, el texto HTML se genera de forma limpia, sin comentarios dentro.
         li.innerHTML = `
             <div class="task-main-content">
                 <div class="priority-indicator ${item.prioridad || 'baja'}"></div>
@@ -256,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ` : ''}
                     </div>
                     <div class="task-actions">
-                        <i class="fas fa-ellipsis-v task-menu-trigger ${hasSubtasksClass}" data-action="openContextMenu" id="${item.id}" title="Más opciones"></i>
+                        <i class="fas fa-ellipsis-v task-menu-trigger ${extraContentClass}" data-action="openContextMenu" id="${item.id}" title="Más opciones"></i>
                     </div>
                 </div>
             </div>
@@ -315,8 +318,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('TODO', JSON.stringify(LIST));
         playSound(soundAdd);
     
-        // CAMBIO: Llamamos a renderTasks pasándole el ID de la tarea actual
-        // para que sepa que no debe reabrir este panel de subtareas en concreto.
         renderTasks({ keepClosedId: parentId });
     }
 
@@ -333,7 +334,6 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('TODO', JSON.stringify(LIST));
         if (subtask.realizado) playSound(soundComplete);
         
-        // Mantenemos abierto el panel de la tarea que se está modificando
         const openExtras = new Set();
         document.querySelectorAll('.task-extra-container.show').forEach(container => {
             openExtras.add(parseInt(container.closest('.task-item').id.replace('elemento-', '')));
@@ -595,9 +595,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const task = LIST.find(t => t.id === taskId);
         if(!task) return;
         
-        // Añadir/quitar clase al botón del menú contextual
         const subtaskBtn = contextMenu.querySelector('[data-action="toggleSubtasks"]');
-        if (task.subtasks && task.subtasks.length > 0) {
+        const hasExtraContent = (task.subtasks && task.subtasks.length > 0) || (task.descripcion && task.descripcion.trim() !== '');
+
+        if (hasExtraContent) {
             subtaskBtn.classList.add('has-subtasks-indicator');
         } else {
             subtaskBtn.classList.remove('has-subtasks-indicator');
@@ -705,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         LIST.forEach(item => { 
             if (item.eliminado === undefined) item.eliminado = false;
             if (!Array.isArray(item.subtasks)) item.subtasks = [];
-            if (item.prioridad === undefined) item.prioridad = 'baja'; // Fallback a 'baja'
+            if (item.prioridad === undefined) item.prioridad = 'baja';
             if (item.vencimiento === undefined) item.vencimiento = null;
             if (item.descripcion === undefined) item.descripcion = '';
             if (!Array.isArray(item.etiquetas)) item.etiquetas = [];
@@ -747,7 +748,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (action === 'toggleRealizado') {
             tareaRealizada(element);
         } else if (action === 'openContextMenu') {
-            // CAMBIO: Lógica para cerrar el panel si ya está abierto
             const extraContainer = parentLi.querySelector('.task-extra-container');
             if (extraContainer && extraContainer.classList.contains('show')) {
                 extraContainer.classList.remove('show');

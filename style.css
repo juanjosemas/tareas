@@ -528,11 +528,13 @@ h1 {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Cambia el color del icono de opciones si la tarea tiene subtareas */
-.task-actions .task-menu-trigger.has-subtasks {
+/* <!-- INICIO DEL CAMBIO REALIZADO --> */
+/* Cambia el color del icono si la tarea tiene subtareas o una descripción/nota. */
+.task-actions .task-menu-trigger.has-extra-content {
     color: var(--header-shadow-color);
     transform: scale(1.15);
 }
+/* <!-- FIN DEL CAMBIO REALIZADO --> */
 
 /* ========================================================================= */
 /* ============== INICIO: SECCIÓN DE SUBTAREAS Y DESCRIPCIÓN =============== */
@@ -784,11 +786,13 @@ h1 {
     text-align: center;
 }
 
-/* Estilo para resaltar la opción de subtareas en el menú contextual */
+/* <!-- INICIO DEL CAMBIO REALIZADO --> */
+/* Estilo para resaltar la opción de Subtareas/Notas en el menú contextual */
 #context-menu button.has-subtasks-indicator {
     color: var(--header-shadow-color);
     font-weight: bold;
 }
+/* <!-- FIN DEL CAMBIO REALIZADO --> */
 
 /* Menú lateral principal */
 #side-menu {
