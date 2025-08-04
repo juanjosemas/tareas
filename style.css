@@ -130,7 +130,8 @@ body.task-theme-lightgreen {
 /* Reseteo universal y transiciones suaves */
 * {
     box-sizing: border-box; /* El padding y borde se incluyen en el ancho/alto total */
-    padding: 1px;
+    /* ===== CAMBIO CLAVE 1: Eliminamos el padding universal que añadía espacios indeseados ===== */
+    padding: 0;
     margin: 0;
     transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave para cambios de color */
 }
@@ -181,6 +182,7 @@ body {
     align-items: center;
     position: relative;
     width: 100%;
+    padding: 1px; /* Devolvemos el padding solo a este elemento si es necesario */
 }
 
 h1 {
@@ -264,7 +266,7 @@ h1 {
     border: none;
     background-color: var(--input-bg);
     color: var(--header-color);
-    padding-left: 10px;
+    padding: 0 10px; /* Ajuste para el nuevo padding universal 0 */
     font-family: 'Piedra', cursive;
     font-size: 20px;
     font-style: italic;
@@ -418,14 +420,15 @@ h1 {
 .task-item .task-main-content {
     display: flex;
     position: relative;
+    padding: 8px 0; /* Añadimos padding vertical para que la tarea respire */
 }
 
 /* Contenido interno (check, texto, opciones) */
 .task-content {
     display: flex;
-    align-items: center;
-    /* CAMBIO: Reducido el padding vertical para hacer las tareas más bajas */
-    padding: 1px 10px;
+    /* ===== CAMBIO CLAVE 2: Alineamos todo arriba en vez de en el centro ===== */
+    align-items: flex-start;
+    padding: 0 10px;
     color: white; 
     flex-grow: 1;
 }
@@ -447,7 +450,6 @@ h1 {
     user-select: none; 
     text-align: left; 
     margin: 0;
-    /* CAMBIO: Reducido el padding vertical para hacer las tareas más bajas */
     padding: 3px 0;
 }
 
@@ -528,13 +530,11 @@ h1 {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* <!-- INICIO DEL CAMBIO REALIZADO --> */
 /* Cambia el color del icono si la tarea tiene subtareas o una descripción/nota. */
 .task-actions .task-menu-trigger.has-extra-content {
     color: var(--header-shadow-color);
     transform: scale(1.15);
 }
-/* <!-- FIN DEL CAMBIO REALIZADO --> */
 
 /* ========================================================================= */
 /* ============== INICIO: SECCIÓN DE SUBTAREAS Y DESCRIPCIÓN =============== */
@@ -545,7 +545,7 @@ h1 {
     height: 6px;
     background-color: var(--progress-bar-bg);
     border-radius: 3px;
-    margin: 0px 10px 4px 10px;
+    margin: 4px 10px; /* Damos un margen arriba y abajo para separar */
     overflow: hidden;
 }
 .progress-bar-fill {
@@ -566,25 +566,27 @@ h1 {
 }
 .task-extra-container.show {
     max-height: 800px; /* Se expande a esta altura */
-    padding-top: 5px;
+    padding-top: 0; /* Eliminamos el padding superior para que el contenido empiece desde arriba */
     padding-bottom: 5px;
 }
 
+/* ===== CAMBIO CLAVE 3: Ajustamos la caja de notas para que sea más pequeña ===== */
 /* Estilos de la descripción/notas */
 .task-description {
-    /* CAMBIO: Reducido el padding y margin para hacer la caja más pequeña */
-    padding: 4px 15px;
+    padding: 2px 12px 8px 12px; /* Relleno: 2px arriba, 8px abajo, 12px lados */
     font-family: Yellowtail, 'Open Sans', sans-serif;
-    font-size: 1.4rem;
+    font-size: 1.2rem; /* Tamaño de fuente más pequeño */
     color: var(--task-text-color);
     white-space: pre-wrap; /* Respeta los saltos de línea */
     word-break: break-word;
     border-bottom: 1px solid rgba(255,255,255,0.2);
     margin-bottom: 5px;
 }
+
 .task-description h5 {
     font-family: 'Piedra', cursive;
-    margin-bottom: 5px;
+    margin: 0 0 4px 0; /* Quitamos margen superior y dejamos 4px abajo */
+    font-size: 1rem; /* Título "Notas" más pequeño */
 }
 
 /* Lista de subtareas */
@@ -667,7 +669,7 @@ h1 {
 .edit-task-input { 
     flex-grow: 1; 
     padding: 8px; 
-    margin: 3px 0; /* Padding ajustado para la nueva altura */
+    margin: 3px 0;
     border: 1px solid #ccc;        
     border-radius: 8px; 
     font-size: var(--task-font-size); 
@@ -786,13 +788,11 @@ h1 {
     text-align: center;
 }
 
-/* <!-- INICIO DEL CAMBIO REALIZADO --> */
 /* Estilo para resaltar la opción de Subtareas/Notas en el menú contextual */
 #context-menu button.has-subtasks-indicator {
     color: var(--header-shadow-color);
     font-weight: bold;
 }
-/* <!-- FIN DEL CAMBIO REALIZADO --> */
 
 /* Menú lateral principal */
 #side-menu {
@@ -899,10 +899,9 @@ h1 {
 .boton-volver-lista {
     background-color: #007bff !important;
     color: white !important;
-    padding: 5px 5px;
+    padding: 5px 10px;
     border-radius: 5px;
-    margin-right: 50px;
- /* Si hay dos lineas para que esten juntas y no una encima de otra */
+    margin-right: 10px;
     white-space: nowrap;
 }
 
@@ -971,7 +970,6 @@ h1 {
     transform: scale(1.1);
 }
 
-/* CORRECCIÓN: Se han movido estas reglas fuera del bloque anterior para que funcionen */
 .color-dot.blue { background: linear-gradient(to bottom, var(--task-bg-gradient-start-blue), var(--task-bg-gradient-end-blue)); }
 .color-dot.red { background: linear-gradient(to bottom, var(--task-bg-gradient-start-red), var(--task-bg-gradient-end-red)); }
 .color-dot.yellow { background: linear-gradient(to bottom, var(--task-bg-gradient-start-yellow), var(--task-bg-gradient-end-yellow)); }
