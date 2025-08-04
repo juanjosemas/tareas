@@ -185,6 +185,7 @@
       <ul>
           <li><button data-action="edit"><i class="fas fa-edit"></i> Editar Detalles</button></li>
           <li><button data-action="toggleSubtasks"><i class="fas fa-tasks"></i> Subtareas/Notas</button></li>
+          <li><button data-action="share"><i class="fas fa-share-alt"></i> Compartir Tarea</button></li>
           <li><button data-action="copy"><i class="fas fa-copy"></i> Copiar Nombre</button></li>
           <li><button data-action="delete"><i class="fas fa-trash"></i> Enviar a Papelera</button></li>
       </ul>
@@ -234,6 +235,30 @@
           <button class="save-task-btn">Guardar Cambios</button>
       </div>
   </div>
+
+  <!-- Modal de Compartir -->
+  <div id="share-task-modal" class="hidden">
+      <div class="modal-header">
+          <h3>Compartir Tarea</h3>
+          <button class="close-share-modal-btn" title="Cerrar">×</button>
+      </div>
+      <div class="modal-content">
+          <div class="form-group">
+              <label>Texto a compartir:</label>
+              <textarea id="share-task-content" readonly rows="8"></textarea>
+          </div>
+      </div>
+      <div class="share-modal-footer">
+          <a id="share-whatsapp" href="#" target="_blank" class="share-btn share-btn-whatsapp" title="Compartir por WhatsApp">
+              <i class="fab fa-whatsapp"></i> WhatsApp
+          </a>
+          <a id="share-email" href="#" class="share-btn share-btn-email" title="Compartir por Correo">
+              <i class="fas fa-envelope"></i> Correo
+          </a>
+          <!-- ===== CAMBIO: Eliminamos el botón 'Copiar' de este modal ===== -->
+      </div>
+  </div>
+
 
   <!-- =============== FIN: ELEMENTOS FLOTANTES =============== -->
 

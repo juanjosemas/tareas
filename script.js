@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const contextMenu = document.getElementById('context-menu');
     const modalOverlay = document.getElementById('modal-overlay');
+
     const editTaskModal = document.getElementById('edit-task-modal');
     const closeModalBtn = document.querySelector('.close-modal-btn');
     const saveTaskBtn = document.querySelector('.save-task-btn');
@@ -48,6 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTaskDesc = document.getElementById('modal-task-desc');
     const modalTaskDueDate = document.getElementById('modal-task-due-date');
     const modalTaskTags = document.getElementById('modal-task-tags');
+
+    // Referencias a los nuevos elementos del modal de compartir
+    const shareTaskModal = document.getElementById('share-task-modal');
+    const closeShareModalBtn = document.querySelector('.close-share-modal-btn');
+    const shareTaskContent = document.getElementById('share-task-content');
+    const shareWhatsappBtn = document.getElementById('share-whatsapp');
+    const shareEmailBtn = document.getElementById('share-email');
+    // ===== CAMBIO: Eliminamos la referencia al botón de copiar =====
     
     // ================== VARIABLES GLOBALES Y CONSTANTES ==================
     const check = 'fa-check-circle', uncheck = 'fa-circle', lineThrough = 'line-through';
@@ -237,11 +246,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const formattedDate = formatDueDate(item.vencimiento);
         const overdueClass = isOverdue(item.vencimiento) && !item.realizado ? 'overdue' : '';
         
-        // Se comprueba si la tarea tiene subtareas O si tiene una descripción que no esté vacía.
         const hasExtraContent = (item.subtasks && item.subtasks.length > 0) || (item.descripcion && item.descripcion.trim() !== '');
         const extraContentClass = hasExtraContent ? 'has-extra-content' : '';
 
-        // Ahora, el texto HTML se genera de forma limpia, sin comentarios dentro.
         li.innerHTML = `
             <div class="task-main-content">
                 <div class="priority-indicator ${item.prioridad || 'baja'}"></div>
@@ -645,6 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.classList.add('show');
         editTaskModal.classList.remove('hidden');
     }
+
     function closeEditModal() {
         if (!editTaskModal.classList.contains('hidden')) {
             modalOverlay.classList.remove('show');
@@ -652,6 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
             editModalTaskId = null;
         }
     }
+
     function saveTaskChanges() {
         if (editModalTaskId === null) return;
         const task = LIST.find(item => item.id === editModalTaskId);
@@ -672,6 +681,52 @@ document.addEventListener('DOMContentLoaded', () => {
         renderTasks();
         closeEditModal();
         showNotification('Tarea actualizada correctamente.');
+    }
+
+    // Funciones para el nuevo modal de compartir
+    function formatTaskForSharing(task) {
+        let content = `*TAREA: ${task.nombre}*\n\n`;
+
+        if (task.prioridad) {
+            content += `*Prioridad:* ${task.prioridad.charAt(0).toUpperCase() + task.prioridad.slice(1)}\n`;
+        }
+        if (task.vencimiento) {
+            content += `*Vence:* ${formatDueDate(task.vencimiento)}\n`;
+        }
+        if (task.descripcion) {
+            content += `\n*Descripción:*\n${task.descripcion}\n`;
+        }
+        if (task.subtasks && task.subtasks.length > 0) {
+            content += `\n*Subtareas:*\n`;
+            task.subtasks.forEach(sub => {
+                content += `- [${sub.realizado ? 'x' : ' '}] ${sub.nombre}\n`;
+            });
+        }
+        return content;
+    }
+
+    function openShareModal(taskId) {
+        const task = LIST.find(item => item.id === taskId);
+        if (!task) return;
+
+        const formattedContent = formatTaskForSharing(task);
+        shareTaskContent.value = formattedContent;
+
+        const encodedContent = encodeURIComponent(formattedContent);
+        shareWhatsappBtn.href = `https://wa.me/?text=${encodedContent}`;
+        
+        const emailSubject = encodeURIComponent(`Detalles de la tarea: ${task.nombre}`);
+        shareEmailBtn.href = `mailto:?subject=${emailSubject}&body=${encodedContent}`;
+        
+        modalOverlay.classList.add('show');
+        shareTaskModal.classList.remove('hidden');
+    }
+
+    function closeShareModal() {
+        if (!shareTaskModal.classList.contains('hidden')) {
+            modalOverlay.classList.remove('show');
+            shareTaskModal.classList.add('hidden');
+        }
     }
     
     // ============= LÓGICA DE EDICIÓN RÁPIDA (DOBLE TOQUE) =============
@@ -813,6 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (action === 'edit') openEditModal(taskId);
         else if (action === 'delete') tareaEliminada(taskId);
         else if (action === 'copy') copiarTareaAlPortapapeles(taskId);
+        else if (action === 'share') openShareModal(taskId);
         else if (action === 'toggleSubtasks') {
             const li = document.getElementById(`elemento-${taskId}`);
             if (!li) return;
@@ -826,7 +882,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     closeModalBtn.addEventListener('click', closeEditModal);
-    modalOverlay.addEventListener('click', closeEditModal);
+
+    // Listeners para cerrar el modal de compartir
+    closeShareModalBtn.addEventListener('click', closeShareModal);
+    
+    // ===== CAMBIO: Eliminamos el listener del botón de copiar =====
+    
+    modalOverlay.addEventListener('click', () => {
+        closeEditModal();
+        closeShareModal();
+    });
+
     saveTaskBtn.addEventListener('click', saveTaskChanges);
 
     document.addEventListener('click', (event) => {
