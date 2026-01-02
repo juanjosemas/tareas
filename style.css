@@ -129,10 +129,11 @@ body.task-theme-lightgreen {
 
 /* Reseteo universal y transiciones suaves */
 * {
-    box-sizing: border-box; 
+    box-sizing: border-box; /* El padding y borde se incluyen en el ancho/alto total */
+    /* ===== CAMBIO CLAVE 1: Eliminamos el padding universal que añadía espacios indeseados ===== */
     padding: 0;
     margin: 0;
-    transition: background-color 0.3s ease, color 0.3s ease; 
+    transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave para cambios de color */
 }
 
 /* Clase para desactivar todas las animaciones y transiciones */
@@ -148,14 +149,14 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    background-attachment: fixed; 
+    background-attachment: fixed; /* El fondo no se mueve con el scroll */
     background-image: var(--body-bg-image);
-    display: flex; 
+    display: flex; /* Flexbox para centrar el contenido principal */
     flex-direction: column;
     align-items: center;
     min-height: 80vh;
     padding: 5px 0;
-    overflow-y: auto;
+    overflow-y: auto; /* Permite scroll si el contenido se desborda */
 }
 
 /* Contenedor principal de la aplicación */
@@ -165,7 +166,7 @@ body {
     margin: 0 auto;
     font-family: Piedra, cursive;
     color: var(--container-color);
-    overflow-x: hidden; 
+    overflow-x: hidden; /* Evita el scroll horizontal */
     display: flex;
     flex-direction: column;
     position: relative;
@@ -181,7 +182,7 @@ body {
     align-items: center;
     position: relative;
     width: 100%;
-    padding: 1px; 
+    padding: 1px; /* Devolvemos el padding solo a este elemento si es necesario */
 }
 
 h1 {
@@ -196,7 +197,7 @@ h1 {
     font-size: 30px;
     text-decoration: underline;
     text-shadow: 3px 3px 1px var(--header-shadow-color), 5px 5px 2px var(--header-shadow-color), 8px 8px 3px var(--header-shadow-color);
-    user-select: none; 
+    user-select: none; /* El texto del título no se puede seleccionar */
 }
 
 .header-title-container {
@@ -225,14 +226,14 @@ h1 {
 /* Etiqueta "Menu" debajo del icono */
 .menu-label {
     position: absolute;
-    bottom: -30px;
+    bottom: -20px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.9rem;
     font-family: Piedra;
     font-style: italic;
     color: var(--header-color);
-    pointer-events: none; 
+    pointer-events: none; /* No interfiere con el clic en el icono */
     user-select: none;
 }
 
@@ -265,7 +266,7 @@ h1 {
     border: none;
     background-color: var(--input-bg);
     color: var(--header-color);
-    padding: 0 10px; 
+    padding: 0 10px; /* Ajuste para el nuevo padding universal 0 */
     font-family: 'Piedra', cursive;
     font-size: 20px;
     font-style: italic;
@@ -342,7 +343,7 @@ h1 {
     font-size: 0.9rem;
 }
 #search-input:focus {
-    outline: none; 
+    outline: none; /* Quita el borde azul al hacer clic */
 }
 .filter-buttons {
     display: flex;
@@ -350,7 +351,7 @@ h1 {
     gap: 8px;
 }
 .filter-btn {
-    flex-grow: 1; 
+    flex-grow: 1; /* Los botones ocupan el mismo espacio */
     padding: 4px;
     border-radius: 8px;
     border: 1px solid var(--container-color);
@@ -362,6 +363,7 @@ h1 {
     font-size: 0.8rem;
     transition: background-color 0.2s, color 0.2s;
 }
+/* Estilo del botón de filtro activo */
 .filter-btn.active {
     background-color: var(--container-color);
     color: white;
@@ -372,22 +374,25 @@ h1 {
 /* ========================================================================= */
 
 .hidden {
-    display: none !important;
+    display: none !important; /* Clase de utilidad para ocultar elementos */
 }
 
+/* Sección que contiene la lista */
 .seccion-tarea {
     margin-top: 0;
     flex-grow: 1;
     overflow-y: auto;
     min-height: 100px; 
-    -webkit-overflow-scrolling: touch; 
+    -webkit-overflow-scrolling: touch; /* Scroll más suave en iOS */
 }
 
+/* Estilos comunes para las listas <ul> */
 .seccion-tarea ul#lista, .seccion-papelera ul#papelera-lista { 
     list-style: none;
     padding-left: 0;
 }
 
+/* Animaciones de entrada */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -398,6 +403,7 @@ h1 {
     to { transform: rotate(0deg); }
 }
 
+/* Contenedor de una sola tarea (el <li>) */
 .task-item {
     display: flex;
     flex-direction: column;
@@ -410,38 +416,44 @@ h1 {
     overflow: hidden; 
 }
 
+/* Contenedor de la parte superior y siempre visible de una tarea */
 .task-item .task-main-content {
     display: flex;
     position: relative;
-    padding: 5px 0;
+    padding: 8px 0; /* Añadimos padding vertical para que la tarea respire */
 }
 
+/* Contenido interno (check, texto, opciones) */
 .task-content {
     display: flex;
+    /* ===== CAMBIO CLAVE 2: Alineamos todo arriba en vez de en el centro ===== */
     align-items: flex-start;
     padding: 0 10px;
     color: white; 
     flex-grow: 1;
 }
 
+/* Detalles de la tarea (nombre, fecha, etiquetas) */
 .task-details {
     flex-grow: 1;
     margin: 0 5px;
     min-width: 0;
-    padding-right: 40px; 
+    padding-right: 40px; /* Espacio para que no se solape con el botón de opciones */
 }
 
+/* Texto principal de la tarea */
 .task-details p.text { 
     font-size: var(--task-font-size);
     color: var(--task-text-color);             
     font-style: italic; 
-    word-break: break-word; 
+    word-break: break-word; /* Evita que el texto se desborde */
     user-select: none; 
     text-align: left; 
     margin: 0;
     padding: 3px 0;
 }
 
+/* Barra de color de prioridad a la izquierda */
 .priority-indicator {
     width: 6px;
     flex-shrink: 0;
@@ -451,6 +463,7 @@ h1 {
 .priority-indicator.media { background-color: var(--priority-medium-color); }
 .priority-indicator.baja { background-color: var(--priority-low-color); }
 
+/* Metadatos (fecha de vencimiento) */
 .task-meta {
     display: flex;
     align-items: center;
@@ -462,13 +475,14 @@ h1 {
     opacity: 0.9;
 }
 .due-date.overdue {
-    color: var(--overdue-text-color); 
+    color: var(--overdue-text-color); /* Color especial si la tarea está vencida */
     font-weight: bold;
 }
 .task-meta i {
     font-size: 0.8rem;
 }
 
+/* Etiquetas (tags) */
 .task-tags {
     display: flex;
     flex-wrap: wrap;
@@ -485,6 +499,7 @@ h1 {
     font-style: normal;
 }
 
+/* Icono de check/uncheck a la izquierda */
 .task-content > i {
     font-size: 17px; 
     cursor: pointer; 
@@ -493,6 +508,7 @@ h1 {
     padding: 5px; 
 }
 
+/* Contenedor del botón de opciones (...) */
 .task-actions {
     position: absolute;
     right: 5px;
@@ -514,6 +530,7 @@ h1 {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
+/* Cambia el color del icono si la tarea tiene subtareas o una descripción/nota. */
 .task-actions .task-menu-trigger.has-extra-content {
     color: var(--header-shadow-color);
     transform: scale(1.15);
@@ -523,11 +540,12 @@ h1 {
 /* ============== INICIO: SECCIÓN DE SUBTAREAS Y DESCRIPCIÓN =============== */
 /* ========================================================================= */
 
+/* Barra de progreso de subtareas */
 .progress-bar-container {
     height: 6px;
     background-color: var(--progress-bar-bg);
     border-radius: 3px;
-    margin: 4px 10px; 
+    margin: 4px 10px; /* Damos un margen arriba y abajo para separar */
     overflow: hidden;
 }
 .progress-bar-fill {
@@ -538,6 +556,7 @@ h1 {
     transition: width 0.3s ease-in-out;
 }
 
+/* Contenedor desplegable (colapsado por defecto) */
 .task-extra-container {
     max-height: 0;
     overflow: hidden;
@@ -546,17 +565,19 @@ h1 {
     padding: 0 10px;
 }
 .task-extra-container.show {
-    max-height: 800px; 
-    padding-top: 0; 
+    max-height: 800px; /* Se expande a esta altura */
+    padding-top: 0; /* Eliminamos el padding superior para que el contenido empiece desde arriba */
     padding-bottom: 5px;
 }
 
+/* ===== CAMBIO CLAVE 3: Ajustamos la caja de notas para que sea más pequeña ===== */
+/* Estilos de la descripción/notas */
 .task-description {
-    padding: 2px 12px 8px 12px; 
+    padding: 2px 12px 8px 12px; /* Relleno: 2px arriba, 8px abajo, 12px lados */
     font-family: Yellowtail, 'Open Sans', sans-serif;
-    font-size: 1.2rem; 
+    font-size: 1.2rem; /* Tamaño de fuente más pequeño */
     color: var(--task-text-color);
-    white-space: pre-wrap; 
+    white-space: pre-wrap; /* Respeta los saltos de línea */
     word-break: break-word;
     border-bottom: 1px solid rgba(255,255,255,0.2);
     margin-bottom: 5px;
@@ -564,10 +585,11 @@ h1 {
 
 .task-description h5 {
     font-family: 'Piedra', cursive;
-    margin: 0 0 4px 0; 
-    font-size: 1rem;
+    margin: 0 0 4px 0; /* Quitamos margen superior y dejamos 4px abajo */
+    font-size: 1rem; /* Título "Notas" más pequeño */
 }
 
+/* Lista de subtareas */
 .subtask-list {
     list-style: none;
     padding: 0 10px 5px 20px;
@@ -594,6 +616,7 @@ h1 {
     cursor: pointer;
     font-style: italic;
 }
+/* Input para añadir nueva subtarea */
 .add-subtask-wrapper {
     padding: 0 10px 10px 20px;
 }
@@ -616,6 +639,7 @@ h1 {
 /* ================== INICIO: ESTILOS DE ESTADO Y VARIOS =================== */
 /* ========================================================================= */
 
+/* Mensaje cuando una lista está vacía */
 #mensaje-lista-vacia, #mensaje-papelera-vacia {
     text-align: center;
     padding: 20px;
@@ -624,6 +648,7 @@ h1 {
     font-size: 1.5rem;
 }
 
+/* Estilo de tachado para tareas completadas */
 .line-through{ 
     text-decoration: line-through;     
     text-decoration-color: var(--header-shadow-color);     
@@ -640,6 +665,7 @@ h1 {
     animation: spin-on-load 0.8s ease-out;
 }
 
+/* Campo de texto para editar el nombre de la tarea con doble clic */
 .edit-task-input { 
     flex-grow: 1; 
     padding: 8px; 
@@ -662,6 +688,7 @@ h1 {
 /* ============= INICIO: ESTILOS DE ELEMENTOS FLOTANTES Y MENÚS ============ */
 /* ========================================================================= */
 
+/* Notificación inferior */
 #notification-container {
     position: fixed;
     bottom: 20px;
@@ -689,6 +716,7 @@ h1 {
     visibility: visible;
 }
 
+/* Botón "Deshacer" en la notificación */
 #undo-button {
     background-color: var(--undo-button-bg);
     color: var(--undo-button-text);
@@ -704,6 +732,7 @@ h1 {
     opacity: 0.9;
 }
 
+/* Capa oscura de fondo para menús y modales */
 #overlay, #modal-overlay {
     position: fixed;
     top: 0;
@@ -722,8 +751,9 @@ h1 {
     visibility: visible;
 }
 
+/* Menú contextual de los 3 puntitos */
 #context-menu {
-    position: fixed; 
+    position: fixed; /* Fijo en la ventana para que no se mueva con el scroll */
     z-index: 2500;
     background-color: var(--menu-bg);
     border-radius: 8px;
@@ -758,11 +788,13 @@ h1 {
     text-align: center;
 }
 
+/* Estilo para resaltar la opción de Subtareas/Notas en el menú contextual */
 #context-menu button.has-subtasks-indicator {
     color: var(--header-shadow-color);
     font-weight: bold;
 }
 
+/* Menú lateral principal */
 #side-menu {
     position: fixed;
     top: 0;
@@ -771,7 +803,7 @@ h1 {
     height: 100%;
     background-color: var(--menu-bg);
     box-shadow: 2px 0 5px rgba(0,0,0,0.2);
-    transform: translateX(-100%); 
+    transform: translateX(-100%); /* Oculto a la izquierda */
     transition: transform 0.3s ease-in-out;
     z-index: 2000;
     display: flex;
@@ -779,7 +811,7 @@ h1 {
 }
 
 #side-menu.show {
-    transform: translateX(0); 
+    transform: translateX(0); /* Se muestra */
 }
 
 .menu-header {
@@ -863,6 +895,7 @@ h1 {
 .papelera-header button:hover, .config-header button:hover {
     opacity: 0.8;
 }
+/* Boton "volver"y palabra "Configuracion" */
 .boton-volver-lista {
     background-color: #007bff !important;
     color: white !important;
@@ -1110,87 +1143,3 @@ input:checked + .slider:before {
 .save-task-btn:hover {
     opacity: 0.9;
 }
-
-/* ========================================================================= */
-/* ============= INICIO: ESTILOS PARA EL MODAL DE COMPARTIR ================ */
-/* ========================================================================= */
-
-#share-task-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 2001;
-    background-color: var(--menu-bg);
-    color: var(--menu-text-color);
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 380px;
-    font-family: 'Open Sans', sans-serif;
-}
-
-#share-task-modal .modal-header {
-    padding: 15px;
-    font-family: 'Piedra', cursive;
-    font-size: 1.3rem;
-    border-bottom: 1px solid var(--menu-button-hover-bg);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-#share-task-modal .close-share-modal-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--menu-text-color);
-    cursor: pointer;
-}
-
-#share-task-content {
-    width: 100%;
-    border: 1px solid var(--toggle-slider-bg);
-    border-radius: 6px;
-    padding: 8px;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    resize: none; 
-    background-color: var(--add-task-bg);
-    color: var(--config-text-color);
-}
-
-/* ===== CAMBIO: Ajustamos el pie del modal para centrar los dos botones ===== */
-.share-modal-footer {
-    padding: 15px;
-    border-top: 1px solid var(--menu-button-hover-bg);
-    display: flex;
-    justify-content: center; /* Centra los botones horizontalmente */
-    align-items: center;
-    gap: 15px; /* Aumenta el espacio entre los botones */
-}
-
-.share-btn {
-    flex-grow: 1; 
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    color: white;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: opacity 0.2s;
-}
-.share-btn:hover {
-    opacity: 0.9;
-}
-
-.share-btn-whatsapp { background-color: #25D366; }
-.share-btn-email { background-color: #007bff; }
-
-/* ===== CAMBIO: Eliminamos el estilo para el botón de copiar, ya que no existe ===== */
